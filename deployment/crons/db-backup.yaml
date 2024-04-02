@@ -1,0 +1,16 @@
+﻿version: "3.9"
+services:
+  postgres-backup:
+    image: martlark/pg_dump:12.16
+    container_name: postgres-backup
+    links:
+      - database:postgres
+    environment:
+      - CRON_SCHEDULE=0 3 * * * # Every day at 3am
+      - RETAIN_COUNT=4 # Keep this number of backups
+      - PGHOST=192.168.1.104
+      - PGPORT=30001
+      - PGUSER=default-user
+      - POSTGRES_PASSWORD=rgT6%Qk9jTaURwK!&
+    volumes:
+      - ./persistent/data:/mnt/portfolio-db/backup
