@@ -1,0 +1,29 @@
+# https://github.com/Martlark/pg_dump
+version: "3.9"
+services:
+  #  database:
+  #    image: postgres:12.16
+  #    volumes:
+  #      - ./persistent/data:/var/lib/postgresql/data
+  #    environment:
+  #      - POSTGRES_PASSWORD=SumPassw0rdHere
+  #      - POSTGRES_DB=postgres
+  #    restart: unless-stopped
+
+  postgres-backup:
+    image: anilsezer/pg_dump:latest
+    container_name: postgres-backup
+    #    links:
+    #      - database:db # Maps as "db"
+    environment:
+      - POSTGRES_DB=postgres
+      - COMMAND=dump
+      - PGUSER=default-user
+      - PGPASSWORD=rgT6%Qk9jTaURwK!&
+      - POSTGRES_PASSWORD=rgT6%Qk9jTaURwK!&
+      - PGHOST=192.168.1.104
+      - PGPORT=30001
+      - CRON_SCHEDULE=1 * * * * # Every day at 3am
+      - RETAIN_COUNT=4 # Keep this number of backups
+    volumes:
+      - ./persistent/data:/dump
