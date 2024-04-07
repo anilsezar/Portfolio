@@ -1,0 +1,38 @@
+﻿apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: db-backup-cronjob
+spec:
+  schedule: "0 0 * * 0"  # Runs every Sunday at 00:00
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: db-backup-cronjob
+              image: anilsezer/pg_dump:latest
+              env:
+                - name: POSTGRES_DB
+                  value: "postgres"
+                - name: COMMAND
+                  value: "dump"
+                - name: PGUSER
+                  value: "default-user"
+                - name: PGPASSWORD
+                  value: "rgT6%Qk9jTaURwK!&"
+                - name: POSTGRES_PASSWORD
+                  value: "rgT6%Qk9jTaURwK!&"
+                - name: PGHOST
+                  value: "192.168.1.104"
+                - name: PGPORT
+                  value: "30001"
+                - name: RETAIN_COUNT
+                  value: "4" # Keep this number of backups
+              volumeMounts:
+                - name: host-volume
+                  mountPath: /mnt/backup-db
+          volumes:
+            - name: host-volume
+              hostPath:
+                path: b/mnt/backup-db  # Path on the host node
