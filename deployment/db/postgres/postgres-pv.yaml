@@ -9,4 +9,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/portfolio-db/postgres"
+    path: "/mnt/nas/db/postgres"

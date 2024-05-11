@@ -1,0 +1,47 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: transmission
+  template:
+    metadata:
+      labels:
+        app: transmission
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: transmission
+          image: lscr.io/linuxserver/transmission:latest
+          ports:
+            - containerPort: 9091
+            - containerPort: 51413
+            - containerPort: 51413
+              protocol: UDP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Istanbul"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: downloads-volume
+              mountPath: /downloads
+            - name: watch-volume
+              mountPath: /watch
+      volumes:
+        - name: config-volume
+          persistentVolumeClaim:
+            claimName: transmission-pvc
+        - name: downloads-volume
+          persistentVolumeClaim:
+            claimName: transmission-pvc
+        - name: watch-volume
+          persistentVolumeClaim:
+            claimName: transmission-pvc
