@@ -1,0 +1,11 @@
+﻿# TODO: This file needs to be developed.
+---
+- name: Stop MicroK8s
+  ansible.builtin.command:
+    cmd: "microk8s stop"
+
+- name: Reboot a slow machine that might have lots of updates to apply
+  ansible.builtin.reboot:
+    reboot_timeout: 3600
+    msg: "Rebooting machine in 3600 as timeout"
+  when: package_update_result.changed

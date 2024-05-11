@@ -1,0 +1,104 @@
+---
+  - name: Install Git
+    ansible.builtin.package:
+      state: present
+      name: git
+      
+  # In Ubuntu/Fedora we have to install it from archive
+  # so it's better to check if it's already installed
+  - name: Check if dust is already installed on Ubuntu/Fedora
+    ansible.builtin.shell: >
+      dust --version
+    register: dust_rc
+    failed_when: false
+    changed_when: false
+    when: ansible_os_family != 'Archlinux'
+
+#  - name: Install dust on Ubuntu/Fedora
+#    become: true
+#    ansible.builtin.unarchive:
+#      src: "https://github.com/bootandy/dust/releases/download/{{ dustversion }}/dust-{{ dustversion }}-aarch64-unknown-linux-gnu.tar.gz"
+#      dest: /usr/local/bin
+#      extra_opts:
+#        - --strip=1
+#        - --wildcards
+#        - '*/dust'
+#      remote_src: true
+#    when: dust_rc.rc != 0
+
+# Install Dust
+  - name: Download dust
+    ansible.builtin.command:
+      cmd: "curl -fsSL -o /usr/local/bin/dust.tar.gz https://github.com/bootandy/dust/releases/download/{{ dustversion }}/dust-{{ dustversion }}-aarch64-unknown-linux-gnu.tar.gz"
+    when: dust_rc.rc != 0
+    
+  - name: Install dust
+    ansible.builtin.unarchive:
+      src: "/usr/local/bin/dust.tar.gz"
+      dest: /usr/local/bin
+      extra_opts:
+        - --strip=1
+        - --wildcards
+        - '*/dust'
+      remote_src: true
+    when: dust_rc.rc != 0
+    
+  - name: Delete dust file
+    ansible.builtin.file:
+      path: "/usr/local/bin/dust.tar.gz"
+      state: absent
+
+  - name: Install eza
+    ansible.builtin.package:
+      state: present
+      name: eza
+
+  - name: Install fd-find
+    ansible.builtin.package:
+      state: present
+      name: fd-find
+
+  - name: Create link fd to fdfind in Debian
+    ansible.builtin.file:
+      src: '/usr/bin/fdfind'
+      dest: '/usr/bin/fd'
+      state: link
+    when: ansible_os_family == 'Debian'
+
+  - name: Install bat
+    ansible.builtin.package:
+      state: present
+      name: bat
+
+  - name: Create link bat to batcat in Debian
+    ansible.builtin.file:
+      src: '/usr/bin/batcat'
+      dest: '/usr/bin/bat'
+      state: link
+    when: ansible_os_family == 'Debian' and ansible_distribution_version is version('23.04', '<')
+
+  - name: Install zoxide
+    ansible.builtin.package:
+      state: present
+      name: zoxide
+      
+  # required by the OMZ plugin zsh-interactive-cd
+  - name: Install fzf (command-line fuzzy finder)
+    ansible.builtin.package:
+      state: present
+      name: fzf
+
+  - name: Install procs
+    community.general.snap:
+      name:
+        - procs
+  
+  - name: Install unzip
+    ansible.builtin.package:
+      state: present
+      name: unzip
+
+  - name: Install ripgrep
+    ansible.builtin.package:
+      state: present
+      name: ripgrep

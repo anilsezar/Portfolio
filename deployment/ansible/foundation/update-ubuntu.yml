@@ -1,0 +1,15 @@
+﻿---
+  - name: Update all host/vm packages
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 3600
+      name: "*"
+      state: latest
+    register: package_update_result
+
+# Use safe restart file, not this
+  - name: Reboot a slow machine that might have lots of updates to apply
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+      msg: "Rebooting machine in 3600 as timeout"
+    when: package_update_result.changed

@@ -1,8 +1,40 @@
-﻿## Graceful shutdown
-k drain NODENAME --ignore-daemonsets --delete-emptydir-data
+﻿## Ansible
+ansible -i inventory.yml all -m ping
+
+ansible-playbook -i inventory.yml update_ubuntu.yml
+
+ansible-playbook -i ../inventory.yml setup-rpis.yml
+
+## Graceful shutdown
+k drain raspberrypi4 --ignore-daemonsets --delete-emptydir-data
 k cordon NODENAME
 
 k uncordon NODENAME
+
+## Node Maintenance
+
+k drain raspberrypi4 --ignore-daemonsets --delete-emptydir-data
+
+sudo apt update
+sudo apt upgrade
+
+
+k uncordon NODENAME
+
+
+## Build for x64 or arm64:
+#### Windows:
+cd .\deployment\crons\backup-db\
+docker build -t anilsezer/pg_dump .
+docker tag IMAGE_ID anilsezer/pg_dump:x64
+docker push anilsezer/pg_dump:x64
+
+#### One liner for Rpi:
+cd .\deployment\crons\backup-db\
+docker build -t anilsezer/pg_dump .
+docker tag IMAGE_ID anilsezer/pg_dump:arm64
+docker push anilsezer/pg_dump:arm64
+
 
 ## DB
 Get superuser:

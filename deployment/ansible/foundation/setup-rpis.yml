@@ -1,0 +1,24 @@
+---
+# Got these from: 
+# https://www.lorenzobettini.it/2023/07/my-ansible-role-for-oh-my-zsh-and-other-cli-programs/
+# and https://shaunandersonaz.github.io/Ansible-To-Setup-OhMyZSH-and-PowerLevel10K/
+- hosts: all
+  become: true
+  tasks:
+    - include_vars: vars/essentials.yml
+    
+    - name: Update ubuntu
+      ansible.builtin.include_tasks: update-ubuntu.yml
+      
+    - name: Setup fonts
+      ansible.builtin.include_tasks: fonts.yml
+      
+    - name: Install some nice tools
+      ansible.builtin.include_tasks: toolkit.yml
+
+# todo: Somehow oh my zsh is not started when I ssh to it If I install it like this. Check it out.      
+#    - name: Tasks for setting zsh
+#      ansible.builtin.include_tasks: setup-zsh.yml
+      
+    - name: Install MicroK8s
+      ansible.builtin.include_tasks: install-microk8s.yml
