@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nas-pvc
+  name: torrent-pvc
 spec:
   accessModes:
     - ReadWriteMany

@@ -12,7 +12,7 @@ spec:
       labels:
         app: transmission
     spec:
-      restartPolicy: OnFailure
+      restartPolicy: Always
       containers:
         - name: transmission
           image: lscr.io/linuxserver/transmission:latest
@@ -38,10 +38,10 @@ spec:
       volumes:
         - name: config-volume
           persistentVolumeClaim:
-            claimName: transmission-pvc
+            claimName: torrent-pvc
         - name: downloads-volume
           persistentVolumeClaim:
-            claimName: transmission-pvc
+            claimName: torrent-pvc
         - name: watch-volume
           persistentVolumeClaim:
-            claimName: transmission-pvc
+            claimName: torrent-pvc

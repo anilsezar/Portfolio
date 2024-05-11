@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nas-pv
+  name: torrent-pv
 spec:
   capacity:
     storage: 3.5Ti
