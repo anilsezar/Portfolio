@@ -2,7 +2,7 @@
 WORKDIR /src
 COPY . .
 
-# Build the application
+WORKDIR "/src/Portfolio.WebUi"
 RUN dotnet publish "Portfolio.WebUi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Final stage: Use the runtime image to create a self-contained deployment
