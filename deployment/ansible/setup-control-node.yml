@@ -1,0 +1,110 @@
+﻿---
+# Got these from: 
+# https://www.lorenzobettini.it/2023/07/my-ansible-role-for-oh-my-zsh-and-other-cli-programs/
+# and https://shaunandersonaz.github.io/Ansible-To-Setup-OhMyZSH-and-PowerLevel10K/
+- hosts: control_node
+  become: true
+  vars:
+    my_remote_user: anilsezer
+    home_path: /home/{{ my_remote_user }}
+  tasks:
+    - name: Copy zshrc.zsh-template to .zshrc
+      ansible.builtin.copy:
+        src: "{{ home_path }}/.oh-my-zsh/templates/zshrc.zsh-template"
+        dest: "~/.zshrc"
+      become_user: "{{ my_remote_user }}"
+      
+      
+## todo: 
+# https://chatgpt.com/c/987a1f05-7e2d-4843-a928-0e569ac3f792
+#To share and mount a folder from your control node to other nodes in your Kubernetes cluster, you can use NFS (Network File System), which is a widely used network file sharing protocol. Here's a step-by-step guide to setting up NFS:
+#
+#### Step 1: Install NFS Server on Control Node
+#
+#First, install the NFS server package on your control node:
+#  
+#  ```bash
+#  sudo apt update
+#  sudo apt install nfs-kernel-server
+#  ```
+#
+#### Step 2: Share the Folder
+#
+#Edit the NFS exports file to specify the folder you want to share:
+#  
+#  ```bash
+#  sudo nano /etc/exports
+#  ```
+#
+#Add the following line to the file to export the `/mnt/nas/torrent` folder:
+#  
+#  ```
+#  /mnt/nas/torrent *(rw,sync,no_subtree_check)
+#  ```
+#  
+#  Save the file and exit the editor.
+#
+#### Step 3: Restart NFS Server
+#
+#After modifying the exports file, restart the NFS server to apply the changes:
+#  
+#  ```bash
+#  sudo systemctl restart nfs-kernel-server
+#  ```
+#
+#### Step 4: Install NFS Client on Other Nodes
+#
+#On each node in your Kubernetes cluster, install the NFS client package:
+#  
+#  ```bash
+#  sudo apt update
+#  sudo apt install nfs-common
+#  ```
+#
+#### Step 5: Mount the Shared Folder
+#
+#Create a mount point directory on each node:
+#  
+#  ```bash
+#  sudo mkdir -p /mnt/nas/torrent
+#  ```
+#
+#Mount the shared folder from the control node to the mount point directory:
+#  
+#  ```bash
+#  sudo mount <control-node-ip>:/mnt/nas/torrent /mnt/nas/torrent
+#  ```
+#  
+#  Replace `<control-node-ip>` with the IP address of your control node.
+#
+#### Step 6: Automate Mount at Boot (Optional)
+#
+#If you want the shared folder to be automatically mounted on each node at boot time, you can add an entry to the `/etc/fstab` file:
+#  
+#  ```bash
+#  sudo nano /etc/fstab
+#  ```
+#
+#Add the following line to the file:
+#  
+#  ```
+#  <control-node-ip>:/mnt/nas/torrent /mnt/nas/torrent nfs defaults 0 0
+#  ```
+#  
+#  Save the file and exit the editor.
+#
+#### Step 7: Verify Mount
+#
+#Verify that the shared folder is mounted on each node:
+#  
+#  ```bash
+#  df -h /mnt/nas/torrent
+#  ```
+#  
+#  You should see the shared folder listed with the control node's IP address as the source.
+#  
+#  ### Step 8: Use HostPath PV in Kubernetes
+#  
+#  With the shared folder mounted on each node, you can now use a `hostPath` PersistentVolume (PV) in Kubernetes with the path `/mnt/nas/torrent`.
+#  
+#  By following these steps, you'll be able to share and mount a folder from your control node to other nodes in your Kubernetes cluster using NFS. This will allow you to use the shared folder as the storage for your Kubernetes applications.

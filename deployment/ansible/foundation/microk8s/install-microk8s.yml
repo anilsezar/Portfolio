@@ -1,0 +1,51 @@
+---
+  ### DISABLE SWAP
+  - name: Update ubuntu
+    ansible.builtin.include_tasks: subtasks/disable-swap.yml
+    
+  ### Enable cgroup_enable & cgroup_memory options for Microk8s
+  - name: Editing cmdline for supporting MicroK8s
+    ansible.builtin.include_tasks: subtasks/edit-cmdline.yml
+  
+  # Set some firewall rules. Source: https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#2-deploying-microk8s
+  - name: Allow traffic on cni0 interface
+    ansible.builtin.ufw:
+      rule: allow
+      direction: in
+      interface: cni0
+    become: yes
+    
+  - name: Allow outgoing traffic on cni0 interface
+    ansible.builtin.ufw:
+      rule: allow
+      direction: out
+      interface: cni0
+    become: yes
+
+  - name: Reboot a slow machine that might have lots of updates to apply
+    ansible.builtin.reboot:
+      reboot_timeout: 3600
+      msg: "Rebooting machine in 3600 as timeout"
+  
+  ### INSTALL MICROK8S
+  - name: Install microk8s
+    community.general.snap:
+      name:
+        - microk8s
+      classic: true
+      channel: "{{ microk8s_version_and_channel }}"
+    register: microk8s_install_result
+      
+  - name: Add user to microk8s group
+    ansible.builtin.user:
+      name: "{{ ansible_user }}"
+      groups: microk8s
+      append: yes
+    become: yes
+
+  - name: Create ~/.kube directory
+    ansible.builtin.file:
+      path: "{{ home_path }}/.kube"
+      state: directory
+      mode: '0700'
+    become: yes

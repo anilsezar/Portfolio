@@ -1,7 +1,5 @@
-﻿powerlinefonts: powerline-fonts
-fdfind: fd-find
-dustversion: v1.0.0
+﻿dustversion: v1.0.0
 procsversion: v0.14.5
-remote_user: anilsezer
-home_path: /home/{{ remote_user }}
+my_remote_user: anilsezer
+home_path: /home/{{ my_remote_user }}
 microk8s_version_and_channel: 1.30/stable
