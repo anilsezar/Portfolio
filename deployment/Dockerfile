@@ -3,7 +3,7 @@ WORKDIR /src
 COPY . .
 
 WORKDIR "/src/Portfolio.WebUi"
-RUN dotnet publish "Portfolio.WebUi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Portfolio.WebUi.csproj" -c Release -o /app/publish
 
 # Final stage: Use the runtime image to create a self-contained deployment
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
