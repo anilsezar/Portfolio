@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Portfolio.DataAccess;
 using Portfolio.DataAccess.Helpers;
 using Portfolio.Domain.Helpers;
 using Portfolio.WebUi.Services;
@@ -15,6 +18,8 @@ else
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 
 builder.DbInitWithPostgres();
+
+builder.Services.AddHealthChecks().AddDbContextCheck<WebAppDbContext>(failureStatus: HealthStatus.Degraded);
 
 var app = builder.Build();
 
@@ -35,6 +40,15 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+app.MapHealthChecks("/readiness", new HealthCheckOptions
+{
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status206PartialContent,
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    }
+});
 
 try
 {
