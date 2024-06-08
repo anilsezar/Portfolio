@@ -19,7 +19,17 @@ public class BackgroundImageFromBingService
 
     public async Task<string> GetBackgroundImg()
     {
-        var img = await _dbContext.BingDailyBackground.SingleOrDefaultAsync(x => x.CreationTime.Date == DateTime.UtcNow.Date);
+
+        BingDailyBackground? img;
+        try
+        {
+            img = await _dbContext.BingDailyBackground.SingleOrDefaultAsync(x => x.CreationTime.Date == DateTime.UtcNow.Date);
+        }
+        catch (Exception)
+        {
+            Log.Error("Db is not working probably. exception handled default image served");
+            return Etcetera.DefaultBackgroundImage;
+        }
 
         if (img != null)
         {
