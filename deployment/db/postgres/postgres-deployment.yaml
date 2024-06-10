@@ -23,9 +23,12 @@ spec:
           ports:
             - containerPort: 5432
           volumeMounts:
-            - name: postgres-storage
+            - name: postgres-db-nas
               mountPath: /var/lib/postgresql/data
+              readOnly: false
       volumes:
-        - name: postgres-storage
-          persistentVolumeClaim:
-            claimName: postgres-pvc
+        - name: postgres-db-nas
+          nfs:
+            server: 192.168.1.122
+            path: /db
+            readOnly: false
