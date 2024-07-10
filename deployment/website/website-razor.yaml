@@ -17,7 +17,7 @@ spec:
           image: anilsezer/portfolio:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 80
+            - containerPort: 8080
             - containerPort: 443
           env:
             - name: ASPNETCORE_ENVIRONMENT
