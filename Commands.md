@@ -3,7 +3,7 @@ ansible -i inventory.yml all -m ping
 
 ansible-playbook -i inventory.yml update_ubuntu.yml
 
-ansible-playbook -i ../inventory.yml setup-rpis.yml
+ansible-playbook -i inventory.yml setup-rpis.yml
 
 ## Graceful shutdown
 k drain raspberrypi4 --ignore-daemonsets --delete-emptydir-data
@@ -18,22 +18,7 @@ k drain raspberrypi4 --ignore-daemonsets --delete-emptydir-data
 sudo apt update
 sudo apt upgrade
 
-
 k uncordon NODENAME
-
-
-## Build for x64 or arm64:
-#### Windows:
-cd .\deployment\crons\backup-db\
-docker build -t anilsezer/pg_dump .
-docker tag IMAGE_ID anilsezer/pg_dump:x64
-docker push anilsezer/pg_dump:x64
-
-#### One liner for Rpi:
-cd .\deployment\crons\backup-db\
-docker build -t anilsezer/pg_dump .
-docker tag IMAGE_ID anilsezer/pg_dump:arm64
-docker push anilsezer/pg_dump:arm64
 
 
 ## DB
@@ -73,21 +58,6 @@ sudo cat /var/log/fail2ban.log | grep "Ban "
 ## Migrations
 dotnet ef migrations add MIGRATIONNAME --startup-project .\Portfolio.WebUi\ --project .\Portfolio.DataAccess\ --output-dir Migrations
 dotnet ef database update --startup-project .\Portfolio.WebUi\
-
-**One liner to build & deploy at the rpi:** <br>
-todo: change this command to build from the root folder
-website:
-git pull && docker build -f ./deployment/Dockerfile -t anilsezer/portfolio . && docker push anilsezer/portfolio:latest && sleep 3 && k rollout restart deployment/portfolio-deployment
-
-api: <br>
-git pull && docker build -f ./Portfolio.Web.Api/Dockerfile . -t anilsezer/portfolio-api && docker push anilsezer/portfolio-api:latest && sleep 3 && k rollout restart deployment/portfolio-api-deployment
-
-ip-lookup cron:
-git pull && docker build -t anilsezer/iplookup-cron-go -f ./CronJobs/IpLookupCron/Dockerfile ./CronJobs/IpLookupCron/ && docker push anilsezer/iplookup-cron-go:latest && sleep 3 && k apply -f deployment/crons/ip-lookup-go-cronjob
-
-### From Root:
-docker build -f ./deployment/Dockerfile -t anilsezer/portfolio Portfolio.WebUi/.
-docker run -p 8080:80 anilsezer/portfolio:latest
 
 ### Check for ports:
 kubectl get svc --all-namespaces -o json | jq -r '.items[] | select(.spec.type == "NodePort") | .spec.ports[] | .nodePort'

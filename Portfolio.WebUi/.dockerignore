@@ -34,5 +34,4 @@ Thumbs.db
 
 
 # Some custom stuff
-# This didnt work. check out later
-wwwroot/img/wallpapers/bingImgOfTheDay_*.bmp
+../Portfolio.Web.Api

@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -109,10 +109,6 @@
 
     <ItemGroup>
       <_ContentIncludedByDefault Remove="PortfolioWebUi\assets\vendor\bootstrap-icons\bootstrap-icons.json" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\Apache_kafka_wordtype.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\elasticsearch-logo-svg-vector.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\Microsoft_.NET_logo.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\techStack\old\PHP-logo.svg" />
     </ItemGroup>
 
     <ItemGroup>
