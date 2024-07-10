@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nest;
 using Serilog;
 using Serilog.Events;
 
@@ -44,14 +43,14 @@ public static class StartupHelper
         });
     }
 
-    public static void DbInitWithElastic(this IServiceCollection services)
-    {
-        var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
-            .DefaultIndex("my_default_index");
-        var client = new ElasticClient(settings);
-
-        services.AddSingleton<IElasticClient>(client);
-    }
+    // public static void DbInitWithElastic(this IServiceCollection services)
+    // {
+    //     var settings = new ConnectionSettings(new Uri("http://localhost:9200"))
+    //         .DefaultIndex("my_default_index");
+    //     var client = new ElasticClient(settings);
+    //
+    //     services.AddSingleton<IElasticClient>(client);
+    // }
     
     // public static void DbInitWithSqLite(this IServiceCollection services)
     // {
