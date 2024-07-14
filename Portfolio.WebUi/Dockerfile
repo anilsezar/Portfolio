@@ -25,21 +25,16 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG TARGETARCH
 
 COPY . .
-# todo: replace -a with --arch 
-# todo: replace -c with --configuration
-# todo: replace -o with --output
 
-RUN dotnet restore "Portfolio.WebUi/Portfolio.WebUi.csproj" -a $TARGETARCH
-RUN dotnet build "Portfolio.WebUi/Portfolio.WebUi.csproj" -c Release -o /app/build -a $TARGETARCH
-
+RUN dotnet restore "Portfolio.WebUi/Portfolio.WebUi.csproj" --arch $TARGETARCH
+RUN dotnet build "Portfolio.WebUi/Portfolio.WebUi.csproj" --configuration Release --output /app/build --arch $TARGETARCH
 
 FROM build AS publish
-# RUN dotnet publish "Portfolio.WebUi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
 ARG TARGETARCH
 
-RUN dotnet publish "Portfolio.WebUi/Portfolio.WebUi.csproj" -o /app/publish --no-restore -a $TARGETARCH
+RUN dotnet publish "Portfolio.WebUi/Portfolio.WebUi.csproj" --output /app/publish --no-restore --arch $TARGETARCH
 
 FROM base AS final
-# WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Portfolio.WebUi.dll"]
