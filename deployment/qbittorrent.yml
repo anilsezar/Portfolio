@@ -1,0 +1,56 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          ports:
+            - containerPort: 9191
+              protocol: TCP
+            - containerPort: 6881
+              protocol: TCP
+            - containerPort: 6881
+              protocol: UDP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Istanbul"
+            - name: WEBUI_PORT
+              value: "9191"
+            - name: TORRENTING_PORT
+              value: "6881"
+            - name: QBT_VERSION
+              value: "latest"
+            - name: QBT_EULA
+              value: "accept"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: torrent
+              mountPath: /downloads
+      volumes:
+        - name: torrent
+          nfs:
+            server: 192.168.1.122
+            path: /nas/torrent
+            readOnly: false
+        - name: config
+          nfs:
+            server: 192.168.1.122
+            path: /nas/qbittorrentConfig
+            readOnly: false
