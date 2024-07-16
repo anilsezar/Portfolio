@@ -7,7 +7,7 @@ public abstract class EntityBase
 
     protected EntityBase()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid(); // todo: Use int
         CreationTime = DateTime.UtcNow;
     }
 }

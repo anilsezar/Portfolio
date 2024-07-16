@@ -1,17 +1,15 @@
 ﻿### Local development Test
 
 docker build -t anilsezer/portfolio -f ./Portfolio.WebUi/Dockerfile --platform linux/amd64 .
-
 docker run -d -p 8080:8080 -p 443:443 --name portfolio-webui-container anilsezer/portfolio
+docker logs --follow portfolio-webui-container
 
 ### Multi platform build Test
 
-docker buildx build --pull -t anilsezer/portfolio -f ./Portfolio.WebUi/Dockerfile --platform linux/arm64,linux/arm,linux/amd64 . --push
+docker buildx build --pull -t anilsezer/portfolio -f ./Portfolio.WebUi/Dockerfile --platform linux/arm64 . --push --progress=plain &> build.log
 
 # Random Useful Commands
 docker manifest inspect mcr.microsoft.com/dotnet/aspnet | grep architecture
-
-
 
 ## Build for x64 or arm64:
 #### Windows:
