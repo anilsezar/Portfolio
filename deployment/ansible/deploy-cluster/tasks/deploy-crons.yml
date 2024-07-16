@@ -1,0 +1,8 @@
+﻿---
+  - name: Ip lookup
+    ansible.builtin.command:
+      cmd: "{{ m }} apply -f {{root-folder}}crons\\ip-lookup-go-cronjob.yaml"
+      
+  - name: Db backup
+    ansible.builtin.command:
+      cmd: "{{ m }} apply -f {{root-folder}}crons\\backup-db\\backup-db-cronjob.yaml"
