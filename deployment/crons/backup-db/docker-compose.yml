@@ -1,8 +1,7 @@
 # https://github.com/Martlark/pg_dump
-version: "3.9"
 services:
   postgres-backup:
-    image: anilsezer/pg_dump:latest
+    image: anilsezer/pg_dump:arm64
     container_name: postgres-backup
     environment:
       - POSTGRES_DB=postgres
