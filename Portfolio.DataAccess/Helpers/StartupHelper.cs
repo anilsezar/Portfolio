@@ -9,6 +9,7 @@ namespace Portfolio.DataAccess.Helpers;
 
 public static class StartupHelper
 {
+    // todo: send this config to chatgpt for asking what minimumlevel does. And after, add this for prod env: https://github.com/b00ted/serilog-sinks-postgresql
     public static void InitLogsWithSerilog(this WebApplicationBuilder builder)
     {
         using var log = new LoggerConfiguration()
