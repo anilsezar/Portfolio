@@ -17,6 +17,8 @@ else
 
 builder.Services.AddScoped<BackgroundImageFromBingService>();
 
+builder.InitOpenTelemetry();
+
 builder.DbInitWithPostgres();
 
 builder.Services.AddHealthChecks().AddDbContextCheck<WebAppDbContext>(failureStatus: HealthStatus.Degraded);
