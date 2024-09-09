@@ -1,5 +1,0 @@
----
-  - name: Install Powerline fonts
-    ansible.builtin.package:
-      state: present
-      name: "fonts-powerline"

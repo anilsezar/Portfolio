@@ -1,0 +1,41 @@
+﻿---
+- name: Build & deploy the website to the cluster
+  hosts: rpi4red
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Install Git
+      ansible.builtin.apt:
+        state: present
+        name: git
+      become: true
+
+    - name: Start Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+      become: true
+
+    - name: Get the latest from git
+      ansible.builtin.git:
+        repo: https://github.com/anil-sezer/Portfolio
+        dest: /home/anilsezer/Portfolio
+        depth: 1
+
+    - name: Build the websites image.
+      ansible.builtin.shell: cd /home/anilsezer/Portfolio && docker build -f ./Portfolio.WebUi/Dockerfile -t anilsezer/portfolio .
+      register: build_image
+      failed_when: build_image.rc != 0
+      changed_when: build_image.rc == 0
+
+    - name: Push the image
+      ansible.builtin.command: docker push anilsezer/portfolio:latest
+      register: push_image
+      failed_when: push_image.rc != 0
+      changed_when: push_image.rc == 0
+
+    - name: Stop Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: stopped
+      become: true

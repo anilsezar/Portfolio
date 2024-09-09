@@ -1,4 +1,0 @@
-﻿---
-- name: asd
-  ansible.builtin.command:
-    cmd: "{{ m }} "

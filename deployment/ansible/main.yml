@@ -1,0 +1,36 @@
+﻿---
+- name: Update all nodes, then set up some quality-of-life tools, then setup Kubernetes cluster
+  hosts: all
+  gather_facts: true
+  # become: true TODO: Become'ları kaldır, yerine bunu koy
+  vars:
+    kubernetes_version: v1.31
+
+    # Containerd settings for flannel. all of those are in the yml file below.
+    # https://github.com/flannel-io/flannel/blob/master/Documentation/kube-flannel.yml
+    pod_network_cdr: 10.244.0.0/16 # default for flannel. Calico's default is different
+
+    # Your folder at the device you run this Ansible playbook. For placing the logs of this Ansible operation.
+    kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
+
+    # Tasks that ran on the control & worker planes vary a bit. This ip
+    control_plane_ip: 192.168.1.120
+    
+    dustversion: v1.0.0
+    procsversion: v0.14.5
+  tasks:
+    - name: Create local directory for logs
+      ansible.builtin.file:
+        path: "{{ kubeadm_init_log_dir }}"
+        state: directory
+      delegate_to: localhost
+
+    - name: Update Ubuntu, then upgrade terminal to oh-my-zsh, then add my terminal config.
+      ansible.builtin.import_tasks: os-and-tools/setup-os-and-cli-tools.yml
+
+    - name: Setup Kubernetes!
+      ansible.builtin.import_tasks: kubernetes-setup/install-vanilla-kubernetes.yml
+
+# kubectl & kubeadm completion'ı ekle
+# kubectl completion -h
+# kubeadm completion -h

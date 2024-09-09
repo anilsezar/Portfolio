@@ -1,0 +1,6 @@
+﻿---
+- name: Verify stuff
+  hosts: all
+  tasks:
+    - name: Is K8s is ready to be deployed? 
+      ansible.builtin.import_tasks: kubernetes-verify/main.yml

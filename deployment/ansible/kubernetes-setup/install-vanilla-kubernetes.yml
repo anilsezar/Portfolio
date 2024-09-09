@@ -1,0 +1,48 @@
+---
+- name: Disabling swap is a must for Kubernetes
+  ansible.builtin.import_tasks: tasks/disable-swap.yml
+
+- name: Install first batch of required packages
+  ansible.builtin.apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - nfs-common # For mounting NFS. Needed for Persistent Volumes from network. Example: Using NAS for PV.
+    update_cache: true
+    state: present
+    install_recommends: true
+  become: true
+
+- name: Enable cgroup_enable & cgroup_memory options for Kubernetes
+  ansible.builtin.import_tasks: tasks/edit-cmdline.yml
+
+- name: Edit containerd configs so it will behave with kubelet
+  ansible.builtin.import_tasks: tasks/containerd-config.yml
+
+- name: Enable some required kernel modules for containerd
+  ansible.builtin.import_tasks: tasks/kernel-modules.yml
+
+- name: Manually enable IPv4 packet forwarding for Kubernetes
+  ansible.builtin.import_tasks: tasks/ipv4.yml
+
+- name: Install kubeadm, kubectl and kubelet
+  ansible.builtin.import_tasks: tasks/install-kubeadm-kubectl-kubelet.yml
+
+- name: Let's boot the control plane!
+  ansible.builtin.import_tasks: tasks/kubeadm-init-control-node.yml
+  when: ansible_default_ipv4.address == control_plane_ip
+
+# - name: Lets boot the worker plane(s)!
+#   ansible.builtin.import_tasks: tasks/kubeadm-init-worker-nodes.yml
+#   when: ansible_default_ipv4.address != control_plane_ip
+
+- name: Equalize containerd and kubelet sandbox image urls.
+  ansible.builtin.import_tasks: tasks/equalize-pause-image-for-containerd-and-kubelet.yml
+
+# - name: Containerd might need a reconfiguration because installing a CNI sometimes alter it.
+#   ansible.builtin.import_tasks: tasks/containerd-config.yml
+
+# TODO: REBOOT AFTER INSTALL, IT FIXES CRASHLOOPBACKOFF
