@@ -31,7 +31,7 @@ public static class StartupHelper
                     o.Endpoint = new Uri("http://localhost:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
-                .AddConsoleExporter()
+                // .AddConsoleExporter()
                 .AddEntityFrameworkCoreInstrumentation()
             ) 
             .WithMetrics(meterBuilder => meterBuilder
@@ -43,7 +43,7 @@ public static class StartupHelper
                     o.Endpoint = new Uri("http://jaeger-service:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
-                .AddConsoleExporter()
+                // .AddConsoleExporter()
             );
     }
     
