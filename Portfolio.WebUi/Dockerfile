@@ -18,14 +18,15 @@ RUN echo "Building on ${BUILDOS} and ${BUILDARCH} with optional variant ${BUILDV
 RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGETVARIANT}"
 
 EXPOSE 8080
-EXPOSE 8081
+
+WORKDIR /src
 
 FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_VERSION AS build
 ARG BUILD_CONFIGURATION=Release
 ARG TARGETARCH
 
-WORKDIR /src
 COPY . .
+
 RUN dotnet restore "Portfolio.WebUi/Portfolio.WebUi.csproj" --arch $TARGETARCH
 RUN dotnet build "Portfolio.WebUi/Portfolio.WebUi.csproj" --arch $TARGETARCH --configuration $BUILD_CONFIGURATION --output /app/build
 
@@ -35,5 +36,6 @@ ARG TARGETARCH
 RUN dotnet publish --arch $TARGETARCH "Portfolio.WebUi/Portfolio.WebUi.csproj" --configuration $BUILD_CONFIGURATION --output /app/publish /p:UseAppHost=false
 
 FROM base AS final
+WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Portfolio.WebUi.dll"]
