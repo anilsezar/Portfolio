@@ -3,8 +3,9 @@ kind: Ingress
 metadata:
   name: portfolio-ingress
   annotations:
-    cert-manager.io/cluster-issuer: lets-encrypt
+    cert-manager.io/cluster-issuer: lets-encrypt-prod
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - anil-sezer.com
@@ -29,26 +30,5 @@ spec:
                 name: website-service
                 port:
                   number: 80
-            path: /
-            pathType: Prefix
-    # Add a new rule for HTTPS traffic on port 443
-    - host: anil-sezer.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: website-service
-                port:
-                  number: 443
-            path: /
-            pathType: Prefix
-    - host: www.anil-sezer.com
-      http:
-        paths:
-          - backend:
-              service:
-                name: website-service
-                port:
-                  number: 443
             path: /
             pathType: Prefix

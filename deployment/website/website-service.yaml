@@ -1,11 +1,11 @@
-﻿# Expose the website
-apiVersion: v1
+﻿apiVersion: v1
 kind: Service
 metadata:
   name: website-service
+  namespace: default
 spec:
   selector:
-    app: portfolio
+    app: website
   ports:
     - name: http
       protocol: TCP
@@ -15,3 +15,4 @@ spec:
       protocol: TCP
       port: 443
       targetPort: 443
+  type: LoadBalancer

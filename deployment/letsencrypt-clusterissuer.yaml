@@ -4,11 +4,12 @@ metadata:
   name: lets-encrypt
 spec:
   acme:
-    email: msnanil@hotmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
+    email: msnanil@hotmail.com
     privateKeySecretRef:
-      name: lets-encrypt-priviate-key
+      name: letsencrypt-prod
     solvers:
       - http01:
           ingress:
-            class: public
+            ingressClassName: nginx
+  
