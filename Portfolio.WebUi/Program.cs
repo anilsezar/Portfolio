@@ -21,7 +21,11 @@ builder.InitOpenTelemetry();
 
 builder.DbInitWithPostgres();
 
-builder.Services.AddHealthChecks().AddDbContextCheck<WebAppDbContext>(failureStatus: HealthStatus.Degraded);
+const string readinessDbCheckName = "databaseConnectionActive";
+builder.Services
+    .AddHealthChecks()
+    .AddDbContextCheck<WebAppDbContext>(failureStatus: HealthStatus.Degraded, name: readinessDbCheckName);
+
 
 var app = builder.Build();
 
@@ -42,8 +46,20 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
+app.MapHealthChecks("/liveness", new HealthCheckOptions
+{
+    Predicate = _ => false, // Always return healthy for liveness
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status200OK, // Liveness doesn't degrade
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    }
+});
+
 app.MapHealthChecks("/readiness", new HealthCheckOptions
 {
+    Predicate = check => check.Name == readinessDbCheckName,
     ResultStatusCodes =
     {
         [HealthStatus.Healthy] = StatusCodes.Status200OK,
