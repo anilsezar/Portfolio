@@ -21,6 +21,11 @@ worker_node:
   hosts:
     rpi4blue:
 
+kubernetes_nodes:
+  hosts:
+    rpi5green:
+    rpi4blue:
+
 nas:
   hosts:
     rpi4red:
