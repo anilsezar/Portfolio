@@ -4,6 +4,14 @@ metadata:
   name: website-deployment
 spec:
   replicas: 1
+  revisionHistoryLimit: 30
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0%
+  minReadySeconds: 5
+  progressDeadlineSeconds: 120
   selector:
     matchLabels:
       app: website
@@ -18,12 +26,25 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-            - containerPort: 443
+            - containerPort: 443 # todo: Remove this
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 60
+            failureThreshold: 3
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
-#              value: "Development" # If you open this, replace the DB connectionString too
             - name: TZ
               value: "Europe/Istanbul"
-#      imagePullSecrets:
-#        - name: dockerlogin
