@@ -1,0 +1,39 @@
+﻿---
+# TODO: Set these later. 
+- name: This command is same-ish as the others below. Use the other ones?
+  ansible.builtin.shell: >
+    kubectl get configmap kube-proxy -n kube-system -o yaml |
+    sed -e "s/strictARP: false/strictARP: true/" |
+    kubectl diff -f - -n kube-system
+  register: 
+  become: true
+
+- name: Get kube-proxy config
+  ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml
+  changed_when: false
+
+- name: Ensure strictARP is set to true in the temp kube-proxy config using sed
+  ansible.builtin.command: 'sed -i "s/strictARP: false/strictARP: true/" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
+  become: true
+
+- name: Ensure mode is set to ipvs in the temp kube-proxy config using sed
+  ansible.builtin.shell: 'sed -i "s/mode: \"[^"]*\"/mode: \"ipvs\"" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
+  become: true
+
+- name: Check if kube-proxy config needs updating (dry run)
+  command: "kubectl diff -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system"
+  register: diff_result
+  failed_when: false
+  changed_when: false
+
+- name: Print differences (if any)
+  debug:
+    var: diff_result.stdout_lines
+  when: diff_result.rc != 0
+
+- name: Remove the temp file
+  ansible.builtin.file:
+    path: /tmp/kube-proxy-temp-config-for-metal-lb.yml
+    state: absent
+  become: true
+  changed_when: false

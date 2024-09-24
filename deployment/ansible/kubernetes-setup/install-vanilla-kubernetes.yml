@@ -42,7 +42,24 @@
 - name: Equalize containerd and kubelet sandbox image urls.
   ansible.builtin.import_tasks: tasks/equalize-pause-image-for-containerd-and-kubelet.yml
 
+- name: Setup MetalLB
+  ansible.builtin.import_tasks: tasks/setup-metal-lb.yml
+
 # - name: Containerd might need a reconfiguration because installing a CNI sometimes alter it.
 #   ansible.builtin.import_tasks: tasks/containerd-config.yml
 
 # TODO: REBOOT AFTER INSTALL, IT FIXES CRASHLOOPBACKOFF
+
+
+# Install MetalLB
+
+# Also instal ngnix, use this: https://www.adaltas.com/en/2022/09/08/kubernetes-metallb-nginx/
+
+# Then install cert manager: https://cert-manager.io/docs/installation/helm/
+
+# https://cert-manager.io/docs/installation/kubectl/#verify
+
+# Your other option is to replace your Issuers with ClusterIssuers; ClusterIssuer 
+# resources apply across all Ingress resources in your cluster. 
+# If using a ClusterIssuer, remember to update the Ingress annotation cert-manager.io/issuer 
+# to cert-manager.io/cluster-issuer.

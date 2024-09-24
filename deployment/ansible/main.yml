@@ -1,8 +1,9 @@
 ﻿---
 - name: Update all nodes, then set up some quality-of-life tools, then setup Kubernetes cluster
-  hosts: all
+  hosts: kubernetes_nodes
   gather_facts: true
   # become: true TODO: Become'ları kaldır, yerine bunu koy
+  # Install helm via Snap!
   vars:
     kubernetes_version: v1.31
 
