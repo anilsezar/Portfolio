@@ -27,11 +27,16 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 443 # todo: Remove this
+          startupProbe:
+            httpGet:
+              path: /liveness
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /liveness
               port: 8080
-            initialDelaySeconds: 5
             timeoutSeconds: 1
             periodSeconds: 60
             failureThreshold: 3
