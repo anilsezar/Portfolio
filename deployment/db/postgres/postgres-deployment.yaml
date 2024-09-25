@@ -17,9 +17,17 @@ spec:
           image: postgres:latest
           env:
             - name: POSTGRES_USER
-              value: default-user # todo: Replace with secret!
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_USER
+
             - name: POSTGRES_PASSWORD
-              value: "rgT6%Qk9jTaURwK!&" # todo: Replace with secret!
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_PASSWORD
+
           ports:
             - containerPort: 5432
           volumeMounts:

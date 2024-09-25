@@ -44,7 +44,7 @@ spec:
             httpGet:
               path: /readiness
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             timeoutSeconds: 1
             periodSeconds: 60
             failureThreshold: 3
@@ -53,3 +53,32 @@ spec:
               value: "Production"
             - name: TZ
               value: "Europe/Istanbul"
+            - name: SQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_HOST
+
+            - name: SQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_PORT
+
+            - name: SQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_USER
+
+            - name: SQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_PASSWORD
+
+            - name: SQL_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_NAME

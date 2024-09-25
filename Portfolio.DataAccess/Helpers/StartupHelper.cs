@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using DotNetEnv;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.OpenTelemetry;
 
 namespace Portfolio.DataAccess.Helpers;
 
@@ -61,12 +61,36 @@ public static class StartupHelper
             .CreateLogger();
         builder.Host.UseSerilog(log);
     }
+
+    private static string GetConnectionStringForPostgres(this WebApplicationBuilder builder)
+    {
+        if (builder.Environment.IsDevelopment())
+            Env.Load("../.env");
+
+        var host = Environment.GetEnvironmentVariable("SQL_DB_HOST");
+        var port = Environment.GetEnvironmentVariable("SQL_DB_PORT");
+        var userName = Environment.GetEnvironmentVariable("SQL_DB_USER");
+        var userPass = Environment.GetEnvironmentVariable("SQL_DB_PASSWORD");
+        var dbName = Environment.GetEnvironmentVariable("SQL_DB_NAME");
+
+        if (string.IsNullOrEmpty(host) || 
+            string.IsNullOrEmpty(port) ||
+            string.IsNullOrEmpty(userName) ||
+            string.IsNullOrEmpty(userPass) ||
+            string.IsNullOrEmpty(dbName)
+            )
+        {
+            Log.Fatal("One or more db ConnectionString value(s) is not set.");
+            throw new InvalidOperationException();
+        }
+
+        // todo: Stop using default public schema
+        return $"Host={host};Port={port};Username={userName};Password={userPass};Database={dbName};";
+    }
     
     public static void DbInitWithPostgres(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException();
-
-        // todo: Stop using default public schema
+        var connectionString = builder.GetConnectionStringForPostgres();
 
         var appName = AssemblyHelper.GetStartupProjectsName();
         builder.Services.AddDbContext<WebAppDbContext>(options =>
@@ -78,11 +102,10 @@ public static class StartupHelper
                     // sqlOptions.MigrationsAssembly(typeof(Startup).GetTypeInfo().Assembly.GetName().Name);
                 }).UseSnakeCaseNamingConvention();
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-            {
-                options.EnableDetailedErrors();
-                options.EnableSensitiveDataLogging();
-            }
+            if (!builder.Environment.IsDevelopment()) return;
+            
+            options.EnableDetailedErrors();
+            options.EnableSensitiveDataLogging();
         });
     }
 }

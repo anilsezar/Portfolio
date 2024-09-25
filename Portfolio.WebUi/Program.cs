@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.InitLogsWithSerilog();
 
-if (EnvironmentHelper.IsDevelopment())
+if (builder.Environment.IsDevelopment())
     builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 else
     builder.Services.AddRazorPages();
