@@ -1,39 +1,63 @@
 ﻿---
 # TODO: Set these later. 
-- name: This command is same-ish as the others below. Use the other ones?
-  ansible.builtin.shell: >
-    kubectl get configmap kube-proxy -n kube-system -o yaml |
-    sed -e "s/strictARP: false/strictARP: true/" |
-    kubectl diff -f - -n kube-system
-  register: 
-  become: true
+#- name: This command is same-ish as the others below. Use the other ones?
+#  ansible.builtin.shell: >
+#    kubectl get configmap kube-proxy -n kube-system -o yaml |
+#    sed -e "s/strictARP: false/strictARP: true/" |
+#    kubectl diff -f - -n kube-system
+#  register: 
+#  become: true
 
-- name: Get kube-proxy config
+- name: Get kube-proxy config.
   ansible.builtin.shell: kubectl get configmap kube-proxy -n kube-system -o yaml >> /tmp/kube-proxy-temp-config-for-metal-lb.yml
   changed_when: false
+  become: false
 
-- name: Ensure strictARP is set to true in the temp kube-proxy config using sed
+- name: Ensure strictARP is set to true in the temp kube-proxy config using sed.
   ansible.builtin.command: 'sed -i "s/strictARP: false/strictARP: true/" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
-  become: true
+  become: false
 
-- name: Ensure mode is set to ipvs in the temp kube-proxy config using sed
-  ansible.builtin.shell: 'sed -i "s/mode: \"[^"]*\"/mode: \"ipvs\"" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
-  become: true
+- name: Ensure mode is set to ipvs in the temp kube-proxy config using sed.
+  ansible.builtin.command: 'sed -i "s/mode: \"[^"]*\"/mode: \"ipvs\"" /tmp/kube-proxy-temp-config-for-metal-lb.yml'
+  become: false
 
-- name: Check if kube-proxy config needs updating (dry run)
-  command: "kubectl diff -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system"
+- name: Check if kube-proxy config needs updating (dry run).
+  ansible.builtin.command: kubectl diff -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system
   register: diff_result
   failed_when: false
   changed_when: false
 
-- name: Print differences (if any)
+- name: Print differences if any.
   debug:
     var: diff_result.stdout_lines
   when: diff_result.rc != 0
+  
+- name: Apply the new config if there is a diff.
+  ansible.builtin.command: kubectl apply -f /tmp/kube-proxy-temp-config-for-metal-lb.yml -n kube-system
+  failed_when: false
+  changed_when: true
+  when: diff_result.rc != 0
 
-- name: Remove the temp file
+- name: Remove the temp config file.
   ansible.builtin.file:
     path: /tmp/kube-proxy-temp-config-for-metal-lb.yml
     state: absent
-  become: true
+  become: false
   changed_when: false
+  
+#- name: Install metallb via helm
+#  block:
+#    - name: Add the metallb helm repo.
+#      ansible.builtin.command: helm repo add metallb https://metallb.github.io/metallb
+#
+#    - name: Install while using the necessarry values.
+#      ansible.builtin.command: helm install metallb metallb/metallb -f values.yaml
+
+- name: Apply metallb configs
+  ansible.builtin.command: kubectl apply -f ../../../metallb-config.yml
+  register: config_apply_result
+  become: false
+
+- name: Print kubectl apply result
+  debug:
+    var: config_apply_result.stdout_lines

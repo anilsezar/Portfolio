@@ -2,6 +2,9 @@
 - name: Disabling swap is a must for Kubernetes
   ansible.builtin.import_tasks: tasks/disable-swap.yml
 
+- name: Edit /etc/hosts in preparation for the cluster DNS
+  ansible.builtin.import_tasks: tasks/edit-etc-host.yml
+
 - name: Install first batch of required packages
   ansible.builtin.apt:
     pkg:
@@ -42,20 +45,30 @@
 - name: Equalize containerd and kubelet sandbox image urls.
   ansible.builtin.import_tasks: tasks/equalize-pause-image-for-containerd-and-kubelet.yml
 
+- name: Install Helm
+  ansible.builtin.command: snap install helm --classic
+  become: true
+
+- name: Enable hosts plugin at CoreDNS and add node ips there
+  ansible.builtin.import_tasks: tasks/core-dns-config.yml
+
 - name: Setup MetalLB
   ansible.builtin.import_tasks: tasks/setup-metal-lb.yml
+
+# https://www.adaltas.com/en/2022/09/08/kubernetes-metallb-nginx/
+- name: Install Nginx
+  ansible.builtin.command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.2.0/deploy/static/provider/cloud/deploy.yaml
+  become: false
+
+# https://cert-manager.io/docs/installation/helm/
+- name: Install Cert Manager
+  ansible.builtin.import_tasks: tasks/install-cert-manager.yml
+
 
 # - name: Containerd might need a reconfiguration because installing a CNI sometimes alter it.
 #   ansible.builtin.import_tasks: tasks/containerd-config.yml
 
 # TODO: REBOOT AFTER INSTALL, IT FIXES CRASHLOOPBACKOFF
-
-
-# Install MetalLB
-
-# Also instal ngnix, use this: https://www.adaltas.com/en/2022/09/08/kubernetes-metallb-nginx/
-
-# Then install cert manager: https://cert-manager.io/docs/installation/helm/
 
 # https://cert-manager.io/docs/installation/kubectl/#verify
 

@@ -2,23 +2,18 @@
 - name: Update all nodes, then set up some quality-of-life tools, then setup Kubernetes cluster
   hosts: kubernetes_nodes
   gather_facts: true
-  # become: true TODO: Become'ları kaldır, yerine bunu koy
-  # Install helm via Snap!
-  vars:
-    kubernetes_version: v1.31
+  # become: true # TODO: Become'ları kaldır, yerine bunu koy
+  # TODO: remove manage_etc_hosts from 
+  vars_files:
+    - variables.yml
+  handlers:
+    - name: Reboot device
+      ansible.builtin.reboot:
+        reboot_timeout: 3600
+        msg: Rebooting machine in 3600 as timeout
+      when: package_update_result.changed
+      become: true
 
-    # Containerd settings for flannel. all of those are in the yml file below.
-    # https://github.com/flannel-io/flannel/blob/master/Documentation/kube-flannel.yml
-    pod_network_cdr: 10.244.0.0/16 # default for flannel. Calico's default is different
-
-    # Your folder at the device you run this Ansible playbook. For placing the logs of this Ansible operation.
-    kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
-
-    # Tasks that ran on the control & worker planes vary a bit. This ip
-    control_plane_ip: 192.168.1.120
-    
-    dustversion: v1.0.0
-    procsversion: v0.14.5
   tasks:
     - name: Create local directory for logs
       ansible.builtin.file:
