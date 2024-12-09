@@ -21,16 +21,6 @@ func DbContext() *gorm.DB {
 	return db
 }
 
-// KEEP THIS CLOSED
-func AutoMigrate(db *gorm.DB) {
-
-	// Automatically migrate your schema, creating the 'requests' table if it doesn't exist.
-	var err = db.AutoMigrate(&Postgres.Request{})
-	if err != nil {
-		panic("failed to auto migrate")
-	}
-}
-
 func getConnectionString() string {
 	var connectionString = connectionStringFromEnvFile()
 
