@@ -1,8 +1,6 @@
 package DataAccess
 
 import (
-	"IpLookupCron/DataAccess/Entities/Postgres"
-	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -11,9 +9,8 @@ import (
 
 func DbContext() *gorm.DB {
 
-	// Initialize the ORM database connection ('dsn' is your Postgres connection string).
-	dsn := getConnectionString()
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+	connectionString := connectionStringFromEnv()
+	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
 	if err != nil {
 		panic("failed to connect to database")
 	}
@@ -21,24 +18,23 @@ func DbContext() *gorm.DB {
 	return db
 }
 
-func getConnectionString() string {
-	var connectionString = connectionStringFromEnvFile()
+func connectionStringFromEnv() string {
 
-	if connectionString != "" {
-		fmt.Println("DB Connection String:", connectionString)
-		return connectionString
+	host, _ := os.LookupEnv("SQL_DB_HOST")
+	port, _ := os.LookupEnv("SQL_DB_PORT")
+	user, _ := os.LookupEnv("SQL_DB_USER")
+	password, _ := os.LookupEnv("SQL_DB_PASSWORD")
+	dbName, _ := os.LookupEnv("SQL_DB_NAME")
+	sslMode, _ := os.LookupEnv("SQL_DB_SSL_MODE")
+	timezone, _ := os.LookupEnv("SQL_DB_TIMEZONE")
+
+	if len(host) == 0 || len(port) == 0 || len(user) == 0 || len(password) == 0 || len(dbName) == 0 || len(sslMode) == 0 || len(timezone) == 0 {
+		panic("Failed to retrieve db connection string. ")
 	}
 
-	fmt.Println("DB Connection String:", connectionString)
+	var connectionString = "host=" + host + " port=" + port + " user=" + user +
+		" password=" + password + " dbname=" + dbName + " sslmode=" + sslMode +
+		" TimeZone=" + timezone
+
 	return connectionString
-}
-
-func connectionStringFromEnvFile() string {
-
-	connectionString, exists := os.LookupEnv("DB_CONNECTION_STRING")
-	if !exists {
-		return ""
-	} else {
-		return connectionString
-	}
 }
