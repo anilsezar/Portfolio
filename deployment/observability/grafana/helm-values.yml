@@ -125,10 +125,10 @@ testFramework:
     tag: "v1.4.1"
   imagePullPolicy: IfNotPresent
   securityContext: {}
-  resources: {}
-  #  limits:
-  #    cpu: 100m
-  #    memory: 128Mi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
   #  requests:
   #    cpu: 100m
   #    memory: 128Mi
@@ -347,10 +347,10 @@ route:
     ## Additional custom rules that can be added to the route
     additionalRules: []
 
-resources: {}
-#  limits:
-#    cpu: 100m
-#    memory: 128Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
 #  requests:
 #    cpu: 100m
 #    memory: 128Mi
@@ -411,7 +411,7 @@ extraContainerVolumes: []
 ##
 persistence:
   type: pvc
-  enabled: false
+  enabled: true
   # storageClassName: default
   accessModes:
     - ReadWriteOnce
@@ -423,7 +423,7 @@ persistence:
   ## Sub-directory of the PV to mount. Can be templated.
   # subPath: ""
   ## Name of an existing PVC. Can be templated.
-  # existingClaim:
+  existingClaim: "grafana-nfs-pvc"
   ## Extra labels to apply to a PVC.
   extraPvcLabels: {}
   disableWarning: false
@@ -479,13 +479,13 @@ initChownData:
         - CHOWN
 
 # Administrator credentials when not using an existing secret (see below)
-adminUser: admin
+# adminUser: admin
 # adminPassword: strongpassword
 
 # Use an existing secret for the admin user.
 admin:
   ## Name of the secret. Can be templated.
-  existingSecret: ""
+  existingSecret: "grafana-credentials"
   userKey: admin-user
   passwordKey: admin-password
 
@@ -1543,4 +1543,3 @@ extraObjects: []
 # Alternatively, if you wish to allow secret values to be exposed in the rendered grafana.ini configmap,
 # you can disable this check by setting assertNoLeakedSecrets to false.
 assertNoLeakedSecrets: true
-
