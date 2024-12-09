@@ -1,0 +1,13 @@
+﻿apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: storage-my-first-prometheus-alertmanager-0 # TODO: USE THIS: alertmanager-nfs-pv
+spec:
+  capacity:
+    storage: 2Gi # Match the size specified in your Helm values
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  nfs:
+    server: 192.168.1.122
+    path: /alertmanager
