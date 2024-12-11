@@ -1,10 +1,6 @@
 package main
 
 import (
-	"IpLookupCron/Constants"
-	"IpLookupCron/DataAccess"
-	"IpLookupCron/DataAccess/Entities/Postgres"
-	"IpLookupCron/DataAccess/ThirdPartyApiCalls/GetIpInfo"
 	"fmt"
 	"github.com/joho/godotenv"
 	"time"
@@ -15,10 +11,10 @@ func main() {
 		fmt.Println("Env file not present")
 	}
 
-	var db = DataAccess.DbContext()
+	var db = DbContext()
 
 	// Query all requests from the database into a slice of Request structs.
-	var requests []Postgres.Request
+	var requests []Request
 	result := db.Where("country = ?", "").Find(&requests)
 	if result.Error != nil {
 		panic("failed to query requests")
@@ -46,7 +42,7 @@ func main() {
 			continue
 		}
 
-		ipInfo, err := GetIpInfo.GetIPInfo(req.ClientIP)
+		ipInfo, err := GetIPInfo(req.ClientIP)
 		if err != nil {
 			time.Sleep(time.Second * 10)
 			fmt.Println(err)
@@ -54,7 +50,7 @@ func main() {
 		}
 
 		// Update the country and city fields of the Request object.
-		req.Country = Constants.GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
+		req.Country = GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
 		// req.Country = ipInfo.Country
 		req.City = ipInfo.City
 
@@ -63,5 +59,5 @@ func main() {
 		time.Sleep(time.Second) // Rate limit the request
 	}
 
-	fmt.Println("IpLookupCron is done.")
+	fmt.Println("ip-lookup-cron is done.")
 }

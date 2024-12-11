@@ -1,4 +1,4 @@
-package DataAccess
+package main
 
 import (
 	"gorm.io/driver/postgres"

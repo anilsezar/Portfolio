@@ -1,4 +1,4 @@
-FROM golang:1.21 as builder
+FROM golang:1.21 AS builder
 
 WORKDIR /app
 
@@ -11,6 +11,6 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 
-COPY --from=builder /app/IpLookupCron .
+COPY --from=builder /app/ip-lookup-cron .
 
-CMD ["./IpLookupCron"]
+CMD ["./ip-lookup-cron"]

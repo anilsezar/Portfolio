@@ -1,4 +1,4 @@
-package Postgres
+package main
 
 import "time"
 

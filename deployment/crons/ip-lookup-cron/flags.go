@@ -1,6 +1,17 @@
-package Constants
+package main
 
 import "fmt"
+
+func GetFlag(countryCode string) string {
+	flag := flags[countryCode]
+	if flag == "" {
+		fmt.Println("Flag not found")
+		return flags["XX"]
+	}
+
+	fmt.Println("Flag:", flag)
+	return flag
+}
 
 var flags = map[string]string{
 	"AD": "🇦🇩",
@@ -255,15 +266,4 @@ var flags = map[string]string{
 	"ZW": "🇿🇼",
 
 	"XX": "🏳",
-}
-
-func GetFlag(countryCode string) string {
-	flag := flags[countryCode]
-	if flag == "" {
-		fmt.Println("Flag not found")
-		return flags["XX"]
-	}
-
-	fmt.Println("Flag:", flag)
-	return flag
 }
