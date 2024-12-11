@@ -3,7 +3,7 @@
 # note: executes as postgres
 
 PGDUMP=${PGDUMP:-'/dump'}
-echo "Starting pg_dump" | tee "${PGDUMP}/dump-log"
+logger "Starting pg_dump" | tee "${PGDUMP}/dump-log"
 if [[ -z $COMMAND ]];
 then
    COMMAND=${1:-dump-cron}

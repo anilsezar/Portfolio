@@ -15,8 +15,8 @@ FILE="$PGDUMP/$PREFIX-$POSTGRES_DB-$DATE.sql"
 
 mkdir -p "${PGDUMP}"
 
-echo "--------"
-echo "Job started: $(date). Dumping to ${FILE}"
+logger "--------"
+logger "Job started: $(date). Dumping to ${FILE}"
 
 pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -f "$FILE" -d "$POSTGRES_DB"
 gzip "$FILE"
