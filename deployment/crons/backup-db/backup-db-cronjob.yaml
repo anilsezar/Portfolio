@@ -13,20 +13,45 @@ spec:
             - name: db-backup-cronjob
               image: anilsezer/pg_dump:latest
               env:
+                - name: PGHOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_HOST
+
+                - name: PGPORT
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_PORT
+
+                - name: PGUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_USER
+
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_PASSWORD
+
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_PASSWORD
+
                 - name: POSTGRES_DB
-                  value: "postgres"
+                  valueFrom:
+                    secretKeyRef:
+                      name: sql-db-secrets
+                      key: SQL_DB_NAME
+
                 - name: COMMAND
                   value: "dump"
-                - name: PGUSER
-                  value: "default-user"
-                - name: PGPASSWORD
-                  value: "rgT6%Qk9jTaURwK!&"
-                - name: POSTGRES_PASSWORD
-                  value: "rgT6%Qk9jTaURwK!&"
-                - name: PGHOST
-                  value: "192.168.1.104"
-                - name: PGPORT
-                  value: "30001"
+
                 - name: RETAIN_COUNT
                   value: "4" # Keep this number of backups
               volumeMounts:
