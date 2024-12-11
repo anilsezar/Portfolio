@@ -6,6 +6,9 @@ spec:
   containers:
     - name: netshoot
       image: nicolaka/netshoot
+      restartPolicy: Never
       command:
         - "sleep"
-        - "3600" # Keeps the pod running for an hour
+        - "18000" # Keeps the pod running for 5 hours
+
+# kubectl exec -it netshoot-debug-pod -- bash
