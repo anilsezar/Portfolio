@@ -1,12 +1,10 @@
-﻿# No longer required as I can directly use NAS at the deployment file
-apiVersion: v1
+﻿apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
 spec:
-  storageClassName: manual
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
-      storage: 5Gi
+      storage: 30Gi

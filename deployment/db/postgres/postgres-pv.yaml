@@ -1,13 +1,13 @@
-﻿# No longer required as I can directly use NAS at the deployment file
-apiVersion: v1
+﻿apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: postgres-pv
 spec:
-  storageClassName: manual
   capacity:
-    storage: 5Gi
+    storage: 30Gi
   accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/mnt/nas/db/postgres"
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 192.168.1.122
+    path: /db
