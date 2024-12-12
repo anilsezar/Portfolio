@@ -1,11 +1,11 @@
 ﻿apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: db-backup-nfs-pvc
+  name: db-backups-nfs-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 90Gi
-  volumeName: db-backup-nfs-pv
+  volumeName: db-backups-nfs-pv

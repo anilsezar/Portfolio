@@ -1,17 +1,13 @@
-# https://github.com/Martlark/pg_dump
 services:
   postgres-backup:
     image: anilsezer/pg_dump:latest
     container_name: postgres-backup
     environment:
-      - POSTGRES_DB=${SQL_DB_NAME}
-      - COMMAND=dump
-      - PGUSER=${SQL_DB_USER}
-      - PGPASSWORD=${SQL_DB_PASSWORD}
-      - POSTGRES_PASSWORD=${SQL_DB_PASSWORD}
-      - PGHOST=${SQL_DB_HOST}
-      - PGPORT=${SQL_DB_PORT}
-      - CRON_SCHEDULE=1 * * * * # Every day at 3am
+      - DB=${SQL_DB_NAME}
+      - USER=${SQL_DB_USER}
+      - PASSWORD=${SQL_DB_PASSWORD}
+      - HOST=${SQL_DB_HOST}
+      - PORT=${SQL_DB_PORT}
       - RETAIN_COUNT=4 # Keep this number of backups
     volumes:
       - ./persistent/data:/dump

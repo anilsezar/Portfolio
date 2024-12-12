@@ -1,7 +1,7 @@
 ﻿apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: db-backup-nfs-pv
+  name: db-backups-nfs-pv
 spec:
   capacity:
     storage: 90Gi
@@ -10,4 +10,4 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: 192.168.1.122
-    path: /db-backup
+    path: /db-backups

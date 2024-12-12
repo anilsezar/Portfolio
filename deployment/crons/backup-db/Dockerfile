@@ -1,44 +1,15 @@
-ARG POSTGRES_VERSION=16.2
-FROM postgres:${POSTGRES_VERSION}-bullseye
-# LABEL org.opencontainers.image.authors="rowe.andrew.d@gmail.com"
+FROM postgres:16.2-bullseye
 
-RUN \
-apt-get update && \
-apt-get install -y cron  && \
-apt-get install -y s3cmd  && \
-apt-get clean && \
-rm -rf /var/lib/apt/lists/*
+# Set up the backup script
+COPY backup.sh /usr/local/bin/backup.sh
+RUN chmod +x /usr/local/bin/backup.sh
 
-EXPOSE 5432
-ENV PGDATA="/data"
-ENV PGDUMP="/dump"
-ENV PGUSER=postgres
+ENV BACKUP_DIR=/backups
 
-# S3 defaults
-ENV S3_HOSTNAME="s3.amazonaws.com"
-ENV S3_HOST_BUCKET="%(bucket)s.s3.amazonaws.com"
-ENV S3_SSL_OPTION="--ssl"
+# Create backup directory
+RUN mkdir -p "${BACKUP_DIR}" && chown postgres:postgres "${BACKUP_DIR}"
 
-COPY --chown=${PGUSER}:${PGUSER} \
-   [ "dump.sh", \
-     "entrypoint.sh", \
-     "/" ]
+VOLUME ["${BACKUP_DIR}"]
 
-USER root
-
-RUN \
-chmod 755 dump.sh && \
-chmod 755 entrypoint.sh && \
-chmod gu+rw /var/run && \
-chmod gu+s /usr/sbin/cron && \
-mkdir ${PGDUMP} && \
-chown ${PGUSER}:${PGUSER} ${PGDUMP} && \
-mkdir ${PGDATA} && \
-chown ${PGUSER}:${PGUSER} ${PGDATA}
-
-VOLUME [ "${PGDUMP}", "${PGDATA}" ]
-
-USER ${PGUSER}
-
-ENTRYPOINT ["bash", "/entrypoint.sh"]
-CMD ["dump-cron"]
+# Set the script as the container's entrypoint
+ENTRYPOINT ["/usr/local/bin/backup.sh"]
