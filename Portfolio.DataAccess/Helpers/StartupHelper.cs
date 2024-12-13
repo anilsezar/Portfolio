@@ -28,7 +28,7 @@ public static class StartupHelper
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://localhost:4317");
+                    o.Endpoint = new Uri("http://otel-collector.default.svc.cluster.local:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
@@ -40,7 +40,7 @@ public static class StartupHelper
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://jaeger-service:4317");
+                    o.Endpoint = new Uri("http://otel-collector.default.svc.cluster.local:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
