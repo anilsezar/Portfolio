@@ -22,13 +22,14 @@ public static class StartupHelper
                 .AddHostDetector()
                 .AddService("Portfolio Website");
         
+        // todo: Get url from configMap
         builder.Services.AddOpenTelemetry()
             .ConfigureResource(appResourceBuilder)
             .WithTracing(tracerBuilder => tracerBuilder
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://otel-collector.default.svc.cluster.local:4317");
+                    o.Endpoint = new Uri("http://otel-collector-opentelemetry-collector.default.svc.cluster.local:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
@@ -40,7 +41,7 @@ public static class StartupHelper
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://otel-collector.default.svc.cluster.local:4317");
+                    o.Endpoint = new Uri("http://otel-collector-opentelemetry-collector.default.svc.cluster.local:4317");
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
