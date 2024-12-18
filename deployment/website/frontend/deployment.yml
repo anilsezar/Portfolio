@@ -51,8 +51,13 @@ spec:
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
+
             - name: TZ
               value: "Europe/Istanbul"
+
+            - name: OTEL_COLLECTOR_ENDPOINT
+              value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
+
             - name: SQL_DB_HOST
               valueFrom:
                 secretKeyRef:

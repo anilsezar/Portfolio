@@ -21,19 +21,28 @@ public static class StartupHelper
                 .AddContainerDetector()
                 .AddHostDetector()
                 .AddService("Portfolio Website");
+
+        var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_COLLECTOR_ENDPOINT");
+        if (string.IsNullOrEmpty(otelEndpoint))
+        {
+            Log.Error("Otel endpoint not set at environment variable! Please set environment variable OTEL_COLLECTOR_ENDPOINT");
+            return;
+        }
+        
+        Log.Information("Starting Open Telemetry with endpoint: {OtelEndpoint}", otelEndpoint);
         
         // todo: Get url from configMap
         builder.Services.AddOpenTelemetry()
             .ConfigureResource(appResourceBuilder)
             .WithTracing(tracerBuilder => tracerBuilder
                 .AddAspNetCoreInstrumentation()
+                .AddEntityFrameworkCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://otel-collector-opentelemetry-collector.default.svc.cluster.local:4317");
+                    o.Endpoint = new Uri(otelEndpoint);
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
-                .AddEntityFrameworkCoreInstrumentation()
             ) 
             .WithMetrics(meterBuilder => meterBuilder
                 .AddProcessInstrumentation()
@@ -41,7 +50,7 @@ public static class StartupHelper
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
-                    o.Endpoint = new Uri("http://otel-collector-opentelemetry-collector.default.svc.cluster.local:4317");
+                    o.Endpoint = new Uri(otelEndpoint);
                     o.Protocol = OtlpExportProtocol.Grpc;
                 })
                 // .AddConsoleExporter()
