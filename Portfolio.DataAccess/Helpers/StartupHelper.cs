@@ -20,7 +20,7 @@ public static class StartupHelper
             resource => resource
                 .AddContainerDetector()
                 .AddHostDetector()
-                .AddService("Portfolio Website");
+                .AddService("Portfolio Frontend" + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
         var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_COLLECTOR_ENDPOINT");
         if (string.IsNullOrEmpty(otelEndpoint))
@@ -31,7 +31,6 @@ public static class StartupHelper
         
         Log.Information("Starting Open Telemetry with endpoint: {OtelEndpoint}", otelEndpoint);
         
-        // todo: Get url from configMap
         builder.Services.AddOpenTelemetry()
             .ConfigureResource(appResourceBuilder)
             .WithTracing(tracerBuilder => tracerBuilder
