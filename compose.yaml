@@ -1,0 +1,12 @@
+﻿services:
+  portfolio.grpc:
+    image: portfolio.grpc
+    build:
+      context: .
+      dockerfile: Portfolio.Grpc/Dockerfile
+
+  portfolio.ui:
+    image: portfolio.ui
+    build:
+      context: .
+      dockerfile: Portfolio.Ui/Dockerfile

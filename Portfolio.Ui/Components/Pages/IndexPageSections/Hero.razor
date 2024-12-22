@@ -1,0 +1,16 @@
+﻿@page "/Hero"
+
+<section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImage) top center; background-size: cover;" alt="Image of the day from Bing. For more, please visit them.">
+    <div class="hero-container" data-aos="fade-in">
+        <h1>Anıl Sezer</h1>
+        <p>Back end developer that uses: <span class="typed" data-typed-items=".Net 8, Kafka, Kubernetes"></span></p>
+    </div>
+    <div class="bing-credit">
+        <b>Background image is by <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank">Bing Daily Wallpapers</a></b>
+    </div>
+</section>
+
+
+@code {
+    private string _backgroundImage = "img/wallpapers/perm/BiodiverseCostaRica.jpg";
+}

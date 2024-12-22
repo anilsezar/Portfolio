@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<!-- =======================================================
+* Template Name: iPortfolio
+* Updated: May 30 2023 with Bootstrap v5.3.0
+* Template URL: https://bootstrapmade.com/iportfolio-bootstrap-portfolio-websites-template/
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
+======================================================== -->
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="shortcut icon" href="img/favicon.png"/>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <base href="/"/>
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]"/>
+    <link rel="stylesheet" href="@Assets["app.css"]"/>
+    <link rel="stylesheet" href="@Assets["Portfolio.Ui.styles.css"]"/>
+
+    <!-- Vendor CSS Files -->
+    <link rel="stylesheet" href="@Assets["vendor/aos/aos.css"]" >
+    <link rel="stylesheet" href="@Assets["vendor/bootstrap/css/bootstrap.min.css"]">
+    <link rel="stylesheet" href="@Assets["vendor/bootstrap-icons/bootstrap-icons.css"]">
+    <link rel="stylesheet" href="@Assets["vendor/boxicons/css/boxicons.css"]">
+    <link rel="stylesheet" href="@Assets["vendor/glightbox/css/glightbox.min.css"]">
+    <link rel="stylesheet" href="@Assets["vendor/swiper/swiper-bundle.min.css"]">
+
+    @* <ImportMap/> *@
+    @* <link rel="icon" type="image/png" href="favicon.png"/> *@
+    @* <HeadOutlet/> *@
+
+    @{
+        const string title = "Anil Sezer's Portfolio";
+        const string description = "Made with love on my bare-metal setup! This project is a showcase of my technical expertise. Code is at www.github.com/anil-sezer/Portfolio";
+
+        const string host = "https://www.anil-sezer.com/";
+        const string imageUrl = host + "img/pp_pic.jpeg";
+        // todo: Blazor does not support doing it like this. Why is beyond me. Find a workaround and do it like this:
+        // todo: Also write a test for this?
+        // var request = this.Request;
+        // var host = request.Scheme + "://" + request.Host.Value;
+        // var imageUrl = host + "img/pp_pic.jpeg";
+    }
+
+    <title>@title</title>
+    <meta name="author" content="Anıl Sezer">
+    <meta content="@description" name="description">
+    <meta content=".Net Core, Kubernetes, Portfolio, Backend Engineer, Developer" name="keywords">
+
+
+    <meta content="@description" name="description">
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="@title">
+    <meta property="og:description" content="@description">
+    <meta property="og:image" content="@imageUrl">
+    <meta property="og:url" content="@host">
+    <meta property="og:type" content="website"/>
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@title">
+    <meta name="twitter:description" content="@description">
+    <meta name="twitter:image" content="@imageUrl">
+</head>
+
+<body>
+<Routes/>
+<script src="_framework/blazor.web.js"></script>
+
+<!-- Vendor JS Files -->
+
+<script src="vendor/purecounter/purecounter_vanilla.js"></script>
+<script src="vendor/aos/aos.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor/glightbox/js/glightbox.min.js"></script>
+<script src="vendor/isotope-layout/isotope.pkgd.min.js"></script>
+<script src="vendor/swiper/swiper-bundle.min.js"></script>
+<script src="vendor/typed.js/typed.umd.js"></script>
+<script src="vendor/waypoints/noframework.waypoints.js"></script>
+<script src="vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<!-- todo: Do I need to add this site.js file? Doesnt it is already added? -->
+<script src="js/site.js"></script>
+
+</body>
+
+</html>
