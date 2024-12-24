@@ -10,7 +10,7 @@ using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 
-namespace Portfolio.DataAccess.Helpers;
+namespace Portfolio.Infrastructure.Helpers;
 
 public static class StartupHelper
 {
@@ -20,6 +20,7 @@ public static class StartupHelper
             resource => resource
                 .AddContainerDetector()
                 .AddHostDetector()
+                .AddOperatingSystemDetector()
                 .AddService("Portfolio Frontend" + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
         var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_COLLECTOR_ENDPOINT");
@@ -36,6 +37,7 @@ public static class StartupHelper
             .WithTracing(tracerBuilder => tracerBuilder
                 .AddAspNetCoreInstrumentation()
                 .AddEntityFrameworkCoreInstrumentation()
+                .AddGrpcCoreInstrumentation()
                 .AddOtlpExporter(o =>
                 {
                     o.Endpoint = new Uri(otelEndpoint);
@@ -44,7 +46,6 @@ public static class StartupHelper
                 // .AddConsoleExporter()
             ) 
             .WithMetrics(meterBuilder => meterBuilder
-                .AddProcessInstrumentation()
                 .AddRuntimeInstrumentation()
                 .AddAspNetCoreInstrumentation()
                 .AddOtlpExporter(o =>
@@ -89,7 +90,7 @@ public static class StartupHelper
             string.IsNullOrEmpty(dbName)
             )
         {
-            Log.Fatal("One or more db ConnectionString value(s) is not set.");
+            Log.Fatal("One or more db ConnectionString value(s) is not set");
             throw new InvalidOperationException();
         }
 

@@ -2,21 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Portfolio.DataAccess;
+using Portfolio.Infrastructure;
 
 #nullable disable
 
 namespace Portfolio.DataAccess.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    [Migration("20231025054104_InitialCreate")]
-    partial class InitialCreate
+    partial class WebAppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +92,66 @@ namespace Portfolio.DataAccess.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Portfolio.Domain.Entities.WebAppEntities.IotDirective", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("creation_time");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("device_name");
+
+                    b.Property<string>("Directives")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("directives");
+
+                    b.HasKey("Id")
+                        .HasName("pk_iot_directive");
+
+                    b.ToTable("iot_directive", null, t =>
+                        {
+                            t.HasComment("Commands and parameters for the Iot devices.");
+                        });
+                });
+
+            modelBuilder.Entity("Portfolio.Domain.Entities.WebAppEntities.IotReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("creation_time");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("device_name");
+
+                    b.Property<string>("Report")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("report");
+
+                    b.HasKey("Id")
+                        .HasName("pk_iot_report");
+
+                    b.ToTable("iot_report", null, t =>
+                        {
+                            t.HasComment("Reports sent to the db by the iot devices.");
+                        });
+                });
+
             modelBuilder.Entity("Portfolio.Domain.Entities.WebAppEntities.Request", b =>
                 {
                     b.Property<Guid>("Id")
@@ -106,19 +164,24 @@ namespace Portfolio.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("accept_language");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("city");
+
                     b.Property<string>("ClientIp")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("client_ip");
 
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("country");
+
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creation_time");
-
-                    b.Property<string>("DeviceType")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("device_type");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()

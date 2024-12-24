@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Portfolio.Domain.Entities.WebAppEntities;
+using Portfolio.Domain.Entities;
 
-namespace Portfolio.DataAccess;
+namespace Portfolio.Infrastructure;
 
 public class WebAppDbContext : DbContext
 {
@@ -12,6 +12,4 @@ public class WebAppDbContext : DbContext
     public DbSet<Request> Request { get; set; }
     public DbSet<BingDailyBackground> BingDailyBackground { get; set; }
     public DbSet<Email> Email { get; set; }
-    public DbSet<IotDirective> IotDirective { get; set; } // todo-anil-beforeMerge: Create another DBContext for the webApi project
-    public DbSet<IotReport> IotReport { get; set; } // todo-anil-beforeMerge: Create another DBContext for the webApi project
 }

@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Portfolio.DataAccess;
+using Portfolio.Infrastructure;
 
 #nullable disable
 
 namespace Portfolio.DataAccess.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    [Migration("20231108185452_UpdateRequestTable")]
-    partial class UpdateRequestTable
+    [Migration("20231025054104_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,24 +107,19 @@ namespace Portfolio.DataAccess.Migrations
                         .HasColumnType("text")
                         .HasColumnName("accept_language");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("city");
-
                     b.Property<string>("ClientIp")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("client_ip");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("country");
-
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creation_time");
+
+                    b.Property<string>("DeviceType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("device_type");
 
                     b.Property<string>("UserAgent")
                         .IsRequired()

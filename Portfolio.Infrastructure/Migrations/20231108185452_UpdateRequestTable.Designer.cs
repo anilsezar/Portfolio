@@ -6,14 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Portfolio.DataAccess;
+using Portfolio.Infrastructure;
 
 #nullable disable
 
 namespace Portfolio.DataAccess.Migrations
 {
     [DbContext(typeof(WebAppDbContext))]
-    [Migration("20231210154916_IotTables")]
-    partial class IotTables
+    [Migration("20231108185452_UpdateRequestTable")]
+    partial class UpdateRequestTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,66 +92,6 @@ namespace Portfolio.DataAccess.Migrations
                     b.ToTable("email", null, t =>
                         {
                             t.HasComment("Emails that have been sent to the admin via the website");
-                        });
-                });
-
-            modelBuilder.Entity("Portfolio.Domain.Entities.WebAppEntities.IotDirective", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_time");
-
-                    b.Property<string>("DeviceName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("device_name");
-
-                    b.Property<string>("Directives")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("directives");
-
-                    b.HasKey("Id")
-                        .HasName("pk_iot_directive");
-
-                    b.ToTable("iot_directive", null, t =>
-                        {
-                            t.HasComment("Commands and parameters for the Iot devices.");
-                        });
-                });
-
-            modelBuilder.Entity("Portfolio.Domain.Entities.WebAppEntities.IotReport", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creation_time");
-
-                    b.Property<string>("DeviceName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("device_name");
-
-                    b.Property<string>("Report")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("report");
-
-                    b.HasKey("Id")
-                        .HasName("pk_iot_report");
-
-                    b.ToTable("iot_report", null, t =>
-                        {
-                            t.HasComment("Reports sent to the db by the iot devices.");
                         });
                 });
 
