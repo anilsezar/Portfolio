@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Domain.Exceptions;
+﻿namespace Portfolio.Infrastructure.Exceptions;
 
 public class InvalidParameterException : Exception
 {

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Serilog;
 
-namespace Portfolio.DataAccess.Helpers;
+namespace Portfolio.Infrastructure.Helpers;
 
 public static class AssemblyHelper
 {
@@ -28,8 +28,8 @@ public static class AssemblyHelper
             }
         }
 
-        string assemblyLocation = entryAssembly.Location;
-        string startupProjectName = Path.GetFileNameWithoutExtension(assemblyLocation);
+        var assemblyLocation = entryAssembly.Location;
+        var startupProjectName = Path.GetFileNameWithoutExtension(assemblyLocation);
 
         return startupProjectName;
     }
