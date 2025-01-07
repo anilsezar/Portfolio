@@ -1,0 +1,26 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Portfolio.Grpc";
+option go_package = "proto/";
+// protoc --proto_path=../../../protos --go_out=. --go-grpc_out=. ../../../protos/background_images.proto
+
+package background_images;
+
+import "google/protobuf/empty.proto";
+
+// There is a duplicate for this enum in the proto file. If this file is edited, that should be too. Search this code for it: GXJQJZ
+enum ImageOfTheDaySource {
+  Bing = 0;
+  NASA = 1;
+}
+
+service BackgroundImages {
+  rpc Persist (BackgroundImageDetails) returns (google.protobuf.Empty);
+  rpc Get (google.protobuf.Empty) returns (BackgroundImageDetails);
+}
+
+message BackgroundImageDetails {
+  string url = 1;
+  string altText = 2;
+  ImageOfTheDaySource Source = 3;
+}

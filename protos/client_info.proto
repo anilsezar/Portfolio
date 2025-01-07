@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Portfolio.Grpc";
+
+package client_info;
+
+import "google/protobuf/empty.proto";
+
+// Lets see how well is my portfolio is doing
+service ClientInfo {
+  rpc StoreInfo (ClientInfoRequest) returns (google.protobuf.Empty);
+}
+
+message ClientInfoRequest {
+  string userAgent = 1;
+  string language = 2;
+  string platform = 3;
+  bool webdriver = 4;
+  string deviceMemory = 5;
+  string hardwareConcurrency = 6;
+  int32 maxTouchPoints = 7;
+  string doNotTrack = 8;
+  string connection = 9;
+  bool cookieEnabled = 10;
+  bool onLine = 11;
+  string referrer = 12;
+  string resolution = 13;
+  string ipAddress = 14;
+  string extras = 15;
+}

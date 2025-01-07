@@ -9,17 +9,28 @@
 
     <ItemGroup>
         <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <Content Include="..\protos\background_images.proto">
+        <Link>protos\background_images.proto</Link>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\greet.proto" GrpcServices="Server"/>
         <Protobuf Include="..\protos\client_info.proto" GrpcServices="Server"/>
+        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Server"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Portfolio.Infrastructure\Portfolio.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
