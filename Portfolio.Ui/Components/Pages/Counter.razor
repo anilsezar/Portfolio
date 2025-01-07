@@ -2,48 +2,74 @@
 @using global::Grpc.Net.Client
 @using Portfolio.Grpc
 @rendermode InteractiveServer
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<button @onclick="GetClientInfo">Get Client Info</button>
 
-<p>@message</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
-
-@code {
-    private int currentCount = 0;
-
-    private async Task IncrementCount()
-    {
-        await CallGrpcService(); // Use `await` for async calls.
-        currentCount++;
-    }
-
-}
+<div>
+    <p><strong>User Agent:</strong> @UserAgent</p>
+    <p><strong>Language:</strong> @Language</p>
+    <p><strong>Platform:</strong> @Platform</p>
+    <p><strong>Time Zone:</strong> @TimeZone</p>
+</div>
 
 @code {
-    private string message = "No message yet.";
+    private string UserAgent;
+    private string Language;
+    private string Platform;
+    private string TimeZone;
 
-    private async Task CallGrpcService()
+    private async Task GetClientInfo()
     {
-        Console.WriteLine("here!!!!!!!!!!");
-        try
-        {
-            // The port number must match the port of the gRPC server.
-            using var channel = GrpcChannel.ForAddress("http://localhost:5085");
-            var client = new Greeter.GreeterClient(channel);
-            var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" });
-            Console.WriteLine("✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅");
-
-            message = $"Greeting: {reply.Message}";
-            Console.WriteLine(reply.Message);
-        }
-        catch (Exception ex)
-        {
-            message = $"Error: {ex.Message}";
-        }
+        var clientInfo = await JSRuntime.InvokeAsync<Dictionary<string, string>>("getClientInfo");
+        UserAgent = clientInfo["userAgent"];
+        Language = clientInfo["language"];
+        Platform = clientInfo["platform"];
+        TimeZone = clientInfo["timeZone"];
     }
 }
+
+@* <p role="status">Current count: @currentCount</p> *@
+
+@* <p>@message</p> *@
+@* *@
+@* <button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
+@* *@
+@* @code { *@
+@*     private int currentCount = 0; *@
+@* *@
+@*     private async Task IncrementCount() *@
+@*     { *@
+@*         await CallGrpcService(); // Use `await` for async calls. *@
+@*         currentCount++; *@
+@*     } *@
+@* *@
+@* } *@
+
+@* @code { *@
+@*     private string message = "No message yet."; *@
+@* *@
+@*     private async Task CallGrpcService() *@
+@*     { *@
+@*         Console.WriteLine("here!!!!!!!!!!"); *@
+@*         try *@
+@*         { *@
+@*             // The port number must match the port of the gRPC server. *@
+@*             using var channel = GrpcChannel.ForAddress("http://localhost:5085"); *@
+@*             var client = new Greeter.GreeterClient(channel); *@
+@*             var reply = await client.SayHelloAsync(new HelloRequest { Name = "GreeterClient" }); *@
+@*             Console.WriteLine("✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅"); *@
+@*          *@
+@*             message = $"Greeting: {reply.Message}"; *@
+@*             Console.WriteLine(reply.Message); *@
+@*         } *@
+@*         catch (Exception ex) *@
+@*         { *@
+@*             message = $"Error: {ex.Message}"; *@
+@*         } *@
+@*     } *@
+@* } *@

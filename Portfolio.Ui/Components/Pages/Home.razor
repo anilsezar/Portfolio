@@ -1,5 +1,12 @@
 ﻿@page "/"
+@using Portfolio.Grpc
 @using Portfolio.Ui.Components.Pages.IndexPageSections
+@using Portfolio.Ui.Factories
+@using Serilog
+@inject IHttpContextAccessor HttpContextAccessor
+@inject ClientInfo.ClientInfoClient ClientInfoClient;
+@inject IJSRuntime JsRuntime
+
 
 <Hero />
 
@@ -11,3 +18,50 @@
     <Contact />
     
 </main>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await GetClientInfo();
+    }
+    
+    private async Task GetClientInfo()
+    {
+        try
+        {
+            var viaJavascript = await JsRuntime.InvokeAsync<Dictionary<string, string>>("getClientInfoViaJs", null);
+    
+            var request = ClientInfoRequestFactory.Create(viaJavascript, HttpContextAccessor);
+            
+            ClientInfoClient.StoreInfo(request);
+            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(ClientInfoClient.StoreInfo));
+        }
+        catch (Exception e)
+        {
+            Log.Error("\u274c Looks like gRPC pod is down. I currently cannot store insights about internet now. Error: {ExMsg}", e.Message);
+        }
+
+    }
+}
+
+<script>
+    // todo: use cookies with guid?
+    window.getClientInfoViaJs = async function () {
+        return {
+            userAgent: navigator.userAgent,
+            language: navigator.languages.toString(),
+            platform: navigator.platform,
+            webdriver: navigator.webdriver || false,
+            deviceMemory: navigator.deviceMemory || "unknown",
+            hardwareConcurrency: navigator.hardwareConcurrency || "unknown",
+            maxTouchPoints: navigator.maxTouchPoints || 0,
+            doNotTrack: navigator.doNotTrack || "unknown",
+            connection: navigator.connection ? navigator.connection.effectiveType : "unknown",
+            cookieEnabled: navigator.cookieEnabled,
+            onLine: navigator.onLine,
+            referrer: document.referrer,
+            resolution: screen.height + "x" +  screen.width,
+        };
+    };
+</script>

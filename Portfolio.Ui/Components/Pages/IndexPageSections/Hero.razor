@@ -1,9 +1,15 @@
 ﻿@page "/Hero"
+@using Google.Protobuf.WellKnownTypes
+@using Portfolio.Domain.Constants
+@using Portfolio.Grpc
+@using Serilog
+@inject BackgroundImages.BackgroundImagesClient BackgroundImagesClient;
+
 
 <section id="hero" class="d-flex flex-column justify-content-center align-items-center" style="background: url(@_backgroundImage) top center; background-size: cover;" alt="Image of the day from Bing. For more, please visit them.">
     <div class="hero-container" data-aos="fade-in">
         <h1>Anıl Sezer</h1>
-        <p>Back end developer that uses: <span class="typed" data-typed-items=".Net 8, Kafka, Kubernetes"></span></p>
+        <p>Back end engineer that uses: <span class="typed" data-typed-items=".Net 9, Kubernetes, Ansible, Kafka"></span></p>
     </div>
     <div class="bing-credit">
         <b>Background image is by <a href="https://www.microsoft.com/en-us/bing/bing-wallpaper" target="_blank">Bing Daily Wallpapers</a></b>
@@ -12,5 +18,23 @@
 
 
 @code {
-    private string _backgroundImage = "img/wallpapers/perm/BiodiverseCostaRica.jpg";
+    private string _backgroundImage = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await BackgroundImagesClient.GetAsync(new Empty());
+            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}, ResponseUrl: {ResponseUrl}", nameof(BackgroundImagesClient.GetAsync), response.Url);
+
+            _backgroundImage = response.Url;
+        }
+        catch (Exception e)
+        {
+            Log.Error("\u274c Looks like gRPC pod is down, serving default bg img. Error: {ExMsg}", e.Message);
+            _backgroundImage = DefaultValues.DefaultBackgroundImage;
+        }
+    }
+    
+    // private string _backgroundImage = "img/wallpapers/perm/BiodiverseCostaRica.jpg";
 }
