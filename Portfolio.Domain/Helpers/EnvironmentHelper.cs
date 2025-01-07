@@ -1,1 +1,0 @@
-namespace Portfolio.Domain.Helpers;public static class EnvironmentHelper{    public static bool IsDevelopment()    {        return string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "Development", StringComparison.InvariantCultureIgnoreCase);    }}
