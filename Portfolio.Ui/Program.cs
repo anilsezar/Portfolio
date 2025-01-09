@@ -21,6 +21,7 @@ builder.Services.AddRazorComponents()
 builder.InitLogsWithSerilog();
 builder.InitOpenTelemetry();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHealthChecks();
 
 var grpcAddress = Environment.GetEnvironmentVariable(EnvironmentVariableNames.Grpc_BaseUrl) ?? throw new MissingEnvironmentValueException();
 builder.Services.AddGrpcClient<ClientInfo.ClientInfoClient>(o =>
