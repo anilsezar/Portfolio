@@ -30,6 +30,8 @@ COPY Portfolio.Ui/ Portfolio.Ui/
 COPY Portfolio.Grpc/ Portfolio.Grpc/
 COPY Portfolio.Domain/ Portfolio.Domain/
 COPY Portfolio.Infrastructure/ Portfolio.Infrastructure/
+# For preventing this: error NETSDK1152: Found multiple publish output files with the same relative path: /src/Portfolio.Grpc/appsettings.Development.json, /src/Portfolio.Ui/appsettings.Development.json, /src/Portfolio.Grpc/appsettings.json, /src/Portfolio.Ui/appsettings.json. [/src/Polio.Ui/appsettings.json. [/src/Portfolio.Ui/Portfolio.Ui.csproj]
+RUN rm -f Portfolio.Grpc/appsettings.json Portfolio.Grpc/appsettings.Development.json
 
 ARG TARGETARCH
 ARG BUILD_CONFIGURATION
