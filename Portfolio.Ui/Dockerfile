@@ -1,22 +1,20 @@
-﻿# From root:
-# docker build -f Portfolio.Grpc/Dockerfile -t portfolio-grpc .
+﻿# docker build -f Portfolio.Ui/Dockerfile -t portfolio-ui .
 # https://devblogs.microsoft.com/dotnet/improving-multiplatform-container-support/
 ARG DOTNET_VERSION=9.0
-ARG TARGETARCH
 ARG BUILD_CONFIGURATION=Release
 
-FROM mcr.microsoft.com/dotnet/aspnet:$DOTNET_VERSION AS base
-LABEL  maintainer="Anil Sezer - msnanil@hotmail.com"
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS base
+LABEL maintainer="Anil Sezer - msnanil@hotmail.com"
 
-ARG TARGETPLATFORM
+ARG BUILDOS
 ARG TARGETOS
+ARG BUILDARCH
 ARG TARGETARCH
+ARG BUILDVARIANT
 ARG TARGETVARIANT
 ARG BUILDPLATFORM
-ARG BUILDOS
-ARG BUILDARCH
-ARG BUILDVARIANT
-RUN echo "Building on $BUILDPLATFORM, targeting $TARGETPLATFORM"
+ARG TARGETPLATFORM
+RUN echo "Building on ${BUILDPLATFORM}, targeting ${TARGETPLATFORM}"
 RUN echo "Building on ${BUILDOS} and ${BUILDARCH} with optional variant ${BUILDVARIANT}"
 RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGETVARIANT}"
 
@@ -24,21 +22,27 @@ RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGET
 WORKDIR /app
 EXPOSE 8080
 
-FROM mcr.microsoft.com/dotnet/sdk:$DOTNET_VERSION AS build
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
 
 WORKDIR /src
-COPY ["protos/", "protos/"]
-COPY ["Portfolio.Ui/Portfolio.Ui.csproj", "Portfolio.Ui/"]
+COPY protos/ protos/
+COPY Portfolio.Ui/ Portfolio.Ui/
+COPY Portfolio.Grpc/ Portfolio.Grpc/
+COPY Portfolio.Domain/ Portfolio.Domain/
+COPY Portfolio.Infrastructure/ Portfolio.Infrastructure/
 
-RUN dotnet restore "Portfolio.Ui/Portfolio.Ui.csproj" --arch $TARGETARCH
-# todo: this copy . . should be deleted
-COPY . .
-WORKDIR "/src/Portfolio.Ui"
-RUN dotnet build "Portfolio.Ui.csproj" --arch $TARGETARCH --configuration $BUILD_CONFIGURATION --output /app/build
+ARG TARGETARCH
+ARG BUILD_CONFIGURATION
+RUN dotnet restore "Portfolio.Ui/Portfolio.Ui.csproj" --arch ${TARGETARCH}
+
+WORKDIR /src/Portfolio.Ui
+RUN dotnet build "Portfolio.Ui.csproj" --arch ${TARGETARCH} --configuration ${BUILD_CONFIGURATION} --output /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Portfolio.Ui.csproj" --configuration $BUILD_CONFIGURATION --output /app/publish /p:UseAppHost=false
+
+ARG TARGETARCH
+ARG BUILD_CONFIGURATION
+RUN dotnet publish --arch ${TARGETARCH} "Portfolio.Ui.csproj" --configuration ${BUILD_CONFIGURATION} --output /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
