@@ -27,11 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="..\protos\client_info.proto" GrpcServices="Client"/>
-        <Protobuf Include="..\protos\background_images.proto" GrpcServices="Client"/>
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="wwwroot\css\style.css" />
     </ItemGroup>
 
