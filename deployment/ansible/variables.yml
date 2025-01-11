@@ -1,0 +1,20 @@
+---
+kubernetes_version: v1.31
+
+# Containerd settings for flannel. all of those are in the yml file below.
+# https://github.com/flannel-io/flannel/blob/master/Documentation/kube-flannel.yml
+pod_network_cdr: 10.244.0.0/16 # default for flannel. Calico's default is different
+
+# Your folder at the device you run this Ansible playbook. For placing the logs of this Ansible operation.
+kubeadm_init_log_dir: /mnt/c/Users/msnan/Downloads/kubeadm-init/
+
+# Tasks that ran on the control & worker planes vary a bit.
+control_plane_ip: 192.168.1.120
+
+# For Installing some nice to have tools.
+# TODO: Implement these
+install_nice_to_have_tools: false
+install_on_all_nodes: false # Only installs at the control node to reduce the update count.
+
+dustversion: v1.0.0
+procsversion: v0.14.5
