@@ -67,10 +67,13 @@
     <meta name="twitter:title" content="@title">
     <meta name="twitter:description" content="@description">
     <meta name="twitter:image" content="@imageUrl">
+    
+     <ImportMap/> @* todo: Whats this? *@
+    <HeadOutlet @rendermode="InteractiveServer"/>
 </head>
 
 <body>
-<Routes/>
+<Routes @rendermode="InteractiveServer"/>
 <script src="_framework/blazor.web.js"></script>
 
 <!-- Vendor JS Files -->
