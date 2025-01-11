@@ -1,5 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
-namespace Portfolio.Domain.Constants;
+namespace Portfolio.Infrastructure.Constants;
 
 public static class EnvironmentVariableNames
 {

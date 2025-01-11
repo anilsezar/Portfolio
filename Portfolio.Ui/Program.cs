@@ -1,7 +1,7 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Portfolio.Domain.Constants;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Grpc;
 using Portfolio.Infrastructure.Exceptions;
 using Portfolio.Infrastructure.Extensions;

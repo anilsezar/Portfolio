@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Portfolio.Domain.Constants;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Grpc;
 using Serilog;
 

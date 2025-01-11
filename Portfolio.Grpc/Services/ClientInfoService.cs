@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
-using Portfolio.Domain.Constants;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Interfaces;
 using Serilog;
