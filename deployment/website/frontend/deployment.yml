@@ -1,7 +1,7 @@
 ﻿apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: website-deployment
+  name: portfolio-ui-deployment
 spec:
   replicas: 1
   revisionHistoryLimit: 30
@@ -14,15 +14,15 @@ spec:
   progressDeadlineSeconds: 120
   selector:
     matchLabels:
-      app: website
+      app: portfolio-ui
   template:
     metadata:
       labels:
-        app: website
+        app: portfolio-ui
     spec:
       containers:
-        - name: portfolio
-          image: anilsezer/portfolio:latest
+        - name: portfolio-ui
+          image: anilsezer/portfolio-ui:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -40,14 +40,15 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 60
             failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /readiness
-              port: 8080
-            initialDelaySeconds: 60
-            timeoutSeconds: 1
-            periodSeconds: 60
-            failureThreshold: 3
+# todo: create a grpc connection readiness probe?
+#          readinessProbe:
+#            httpGet:
+#              path: /readiness
+#              port: 8080
+#            initialDelaySeconds: 60
+#            timeoutSeconds: 1
+#            periodSeconds: 60
+#            failureThreshold: 3
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
@@ -57,33 +58,6 @@ spec:
 
             - name: OTEL_COLLECTOR_ENDPOINT
               value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
-
-            - name: SQL_DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: sql-db-secrets
-                  key: SQL_DB_HOST
-
-            - name: SQL_DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: sql-db-secrets
-                  key: SQL_DB_PORT
-
-            - name: SQL_DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: sql-db-secrets
-                  key: SQL_DB_USER
-
-            - name: SQL_DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: sql-db-secrets
-                  key: SQL_DB_PASSWORD
-
-            - name: SQL_DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: sql-db-secrets
-                  key: SQL_DB_NAME
+            
+            - name: GRPC_BASE_URL
+              value: "http://portfolio-grpc-service.default.svc.cluster.local:8080"

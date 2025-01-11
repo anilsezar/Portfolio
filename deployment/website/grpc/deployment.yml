@@ -1,0 +1,88 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-grpc-deployment
+spec:
+  replicas: 1
+  revisionHistoryLimit: 30
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0%
+  minReadySeconds: 5
+  progressDeadlineSeconds: 120
+  selector:
+    matchLabels:
+      app: portfolio-grpc
+  template:
+    metadata:
+      labels:
+        app: portfolio-grpc
+    spec:
+      containers:
+        - name: portfolio-grpc
+          image: anilsezer/portfolio-grpc:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+#          startupProbe:
+#            httpGet:
+#              path: /liveness
+#              port: 8080
+#            failureThreshold: 30
+#            periodSeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /liveness
+#              port: 8080
+#            timeoutSeconds: 1
+#            periodSeconds: 60
+#            failureThreshold: 3
+#          readinessProbe:
+#            httpGet:
+#              path: /readiness
+#              port: 8080
+#            initialDelaySeconds: 60
+#            timeoutSeconds: 1
+#            periodSeconds: 60
+#            failureThreshold: 3
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+
+            - name: TZ
+              value: "Europe/Istanbul"
+
+            - name: OTEL_COLLECTOR_ENDPOINT
+              value: "http://otel-collector-cluster-opentelemetry-collector.default.svc.cluster.local:4317"
+
+            - name: SQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_HOST
+
+            - name: SQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_PORT
+
+            - name: SQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_USER
+
+            - name: SQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_PASSWORD
+
+            - name: SQL_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sql-db-secrets
+                  key: SQL_DB_NAME

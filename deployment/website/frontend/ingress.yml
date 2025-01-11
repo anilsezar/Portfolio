@@ -1,7 +1,7 @@
 ﻿apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: portfolio-ingress
+  name: portfolio-ui-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
@@ -17,7 +17,7 @@ spec:
         paths:
           - backend:
               service:
-                name: website-service
+                name: portfolio-ui-service
                 port:
                   number: 80
             path: /
@@ -27,7 +27,7 @@ spec:
         paths:
           - backend:
               service:
-                name: website-service
+                name: portfolio-ui-service
                 port:
                   number: 80
             path: /
