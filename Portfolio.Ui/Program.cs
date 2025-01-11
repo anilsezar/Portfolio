@@ -60,6 +60,11 @@ app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
     }
 });
 
+app.MapMethods(DefaultValues.HealthCheck_ThirdParty, [HttpMethods.Head], () =>
+{
+    return Results.Ok();
+});
+
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
