@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"strings"
 	"time"
 )
 
@@ -13,32 +14,20 @@ func main() {
 
 	var db = DbContext()
 
-	// Query all requests from the database into a slice of Request structs.
 	var requests []Request
 	result := db.Where("country = ?", "").Find(&requests)
 	if result.Error != nil {
 		panic("failed to query requests")
 	}
 
-	// Iterate over the slice and perform some operations (e.g., update the country and city based on the client IP).
+	deletedRowCount := 0
 	for _, req := range requests {
-		// Assume getIPInfo is a function that returns country and city information for a given IP.
-
-		if req.ClientIP == "31.223.32.192" {
-			req.Country = "🏠 - Me"
-			req.City = "Istanbul"
-
-			// Save the updated request back to the database.
-			db.Save(&req)
-			continue
-		}
-
-		if req.ClientIP == "127.0.0.1" {
-			req.Country = "🖥️ - Me"
-			req.City = "Istanbul"
-
-			// Save the updated request back to the database.
-			db.Save(&req)
+		if req.ClientIP == "127.0.0.1" ||
+			req.ClientIP == "31.223.32.192" ||
+			strings.Contains(strings.ToLower(req.UserAgent), "uptimerobot") {
+			fmt.Println("Will delete this row: " + fmt.Sprintf("%v", req))
+			db.Delete(&req)
+			deletedRowCount++
 			continue
 		}
 
@@ -49,15 +38,14 @@ func main() {
 			continue
 		}
 
-		// Update the country and city fields of the Request object.
 		req.Country = GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
-		// req.Country = ipInfo.Country
 		req.City = ipInfo.City
 
-		// Save the updated request back to the database.
 		db.Save(&req)
-		time.Sleep(time.Second) // Rate limit the request
+		time.Sleep(time.Second * 2) // Rate limit the request
 	}
 
 	fmt.Println("ip-lookup-cron is done.")
+	fmt.Println("Affected: " + fmt.Sprintf("%d", result.RowsAffected) + " rows")
+	fmt.Println("Deleted: " + fmt.Sprintf("%d", deletedRowCount) + " rows")
 }
