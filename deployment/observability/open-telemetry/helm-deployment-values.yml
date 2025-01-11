@@ -6,7 +6,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 # Valid values are "daemonset", "deployment", and "statefulset".
-mode: ""
+mode: "deployment"
 
 # Specify which namespace should be used to deploy the resources into
 namespaceOverride: ""
@@ -68,14 +68,14 @@ presets:
   # Best used with mode = deployment or statefulset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-objects-receiver for details on the receiver.
   kubernetesEvents:
-    enabled: false
+    enabled: true
   # Configures the Kubernetes Cluster Receiver to collect cluster-level metrics.
   # Adds the k8s_cluster receiver to the metrics pipeline
   # and adds the necessary rules to ClusteRole.
   # Best used with mode = deployment or statefulset.
   # See https://opentelemetry.io/docs/kubernetes/collector/components/#kubernetes-cluster-receiver for details on the receiver.
   clusterMetrics:
-    enabled: false
+    enabled: true
 
 configMap:
   # Specifies whether a configMap should be created (true by default)
@@ -92,7 +92,10 @@ configMap:
 # For example, {{ REDACTED_EMAIL }} becomes {{` {{ REDACTED_EMAIL }} `}}.
 config:
   exporters:
-    debug: {}
+    prometheus:
+      endpoint: "0.0.0.0:9464" # Prometheus endpoint for exposing metrics
+      send_timestamps: true
+
   extensions:
     # The health_check extension is mandatory for this chart.
     # Without the health_check extension the collector will fail the readiness and liveliness probes.
@@ -124,14 +127,15 @@ config:
           endpoint: ${env:MY_POD_IP}:4317
         http:
           endpoint: ${env:MY_POD_IP}:4318
-    prometheus:
-      config:
-        scrape_configs:
-          - job_name: opentelemetry-collector
-            scrape_interval: 10s
-            static_configs:
-              - targets:
-                  - ${env:MY_POD_IP}:8888
+# Remove this:
+#    prometheus:
+#      config:
+#        scrape_configs:
+#          - job_name: otel-collector
+#            scrape_interval: 15s
+#            static_configs:
+#              - targets:
+#                  - "0.0.0.0:9464"
     zipkin:
       endpoint: ${env:MY_POD_IP}:9411
   service:
@@ -149,15 +153,18 @@ config:
           - batch
         receivers:
           - otlp
+
       metrics:
         exporters:
           - debug
+          - prometheus
         processors:
           - memory_limiter
           - batch
         receivers:
           - otlp
           - prometheus
+
       traces:
         exporters:
           - debug
@@ -166,8 +173,7 @@ config:
           - batch
         receivers:
           - otlp
-          - jaeger
-          - zipkin
+          # - jaeger # todo: I will open this up later
 
 # Helm currently has an issue (https://github.com/helm/helm/pull/12879) when using null to remove
 # default configuration from a subchart. The result is that you cannot remove default configuration
@@ -188,7 +194,7 @@ alternateConfig: {}
 
 image:
   # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
-  repository: ""
+  repository: otel/opentelemetry-collector-contrib
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -298,12 +304,11 @@ ports:
     servicePort: 14250
     hostPort: 14250
     protocol: TCP
-  zipkin:
-    enabled: true
-    containerPort: 9411
-    servicePort: 9411
-    hostPort: 9411
-    protocol: TCP
+  prometheus:
+      enabled: true
+      containerPort: 9464
+      servicePort: 9464
+      protocol: TCP
   metrics:
     # The metrics port is disabled by default. However you need to enable the port
     # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
@@ -319,11 +324,10 @@ useGOMEMLIMIT: true
 
 # Resource limits & requests.
 # It is HIGHLY recommended to set resource limits.
-resources: {}
-# resources:
-#   limits:
-#     cpu: 250m
-#     memory: 512Mi
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi # TODO-anil: Reduce this
 
 podAnnotations: {}
 
@@ -411,15 +415,15 @@ lifecycleHooks: {}
 ##
 livenessProbe:
   # Number of seconds after the container has started before startup, liveness or readiness probes are initiated.
-  # initialDelaySeconds: 1
+  initialDelaySeconds: 20
   # How often in seconds to perform the probe.
-  # periodSeconds: 10
+  periodSeconds: 10
   # Number of seconds after which the probe times out.
-  # timeoutSeconds: 1
+  timeoutSeconds: 2
   # Minimum consecutive failures for the probe to be considered failed after having succeeded.
-  # failureThreshold: 1
+  failureThreshold: 1
   # Duration in seconds the pod needs to terminate gracefully upon probe failure.
-  # terminationGracePeriodSeconds: 10
+  terminationGracePeriodSeconds: 20
   httpGet:
     port: 13133
     path: /
@@ -429,15 +433,15 @@ livenessProbe:
 ##
 readinessProbe:
   # Number of seconds after the container has started before startup, liveness or readiness probes are initiated.
-  # initialDelaySeconds: 1
+  initialDelaySeconds: 20
   # How often (in seconds) to perform the probe.
-  # periodSeconds: 10
+  periodSeconds: 10
   # Number of seconds after which the probe times out.
-  # timeoutSeconds: 1
+  timeoutSeconds: 2
   # Minimum consecutive successes for the probe to be considered successful after having failed.
-  # successThreshold: 1
+  successThreshold: 3
   # Minimum consecutive failures for the probe to be considered failed after having succeeded.
-  # failureThreshold: 1
+  failureThreshold: 1
   httpGet:
     port: 13133
     path: /
@@ -464,7 +468,7 @@ service:
   # Enable the creation of a Service.
   # By default, it's enabled on mode != daemonset.
   # However, to enable it on mode = daemonset, its creation must be explicitly enabled
-  # enabled: true
+  enabled: true
 
   type: ClusterIP
   # type: LoadBalancer
@@ -475,8 +479,13 @@ service:
   # unless other value is explicitly set.
   # Possible values are Cluster or Local (https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip)
   # externalTrafficPolicy: Cluster
-
-  annotations: {}
+  
+#  # TODO: These might not be useful at all. TODO: DELETE AFTER DEPLOYMENT, THEY DONT HAVE AN EFFECT
+#  annotations:
+#    prometheus.io/scrape: "true"
+#    prometheus.io/path: "/metrics"
+#    prometheus.io/port: "9464"
+#    prometheus.io/scheme: "http"
 
   # By default, Service will be created setting 'internalTrafficPolicy: Local' on mode = daemonset
   # unless other value is explicitly set.
