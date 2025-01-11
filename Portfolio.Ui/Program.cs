@@ -12,7 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
-EnvironmentExtensions.VerifyEnvironmentValueIsSet(EnvironmentVariableNames.Grpc_BaseUrl);
+
+EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
+    EnvironmentVariableNames.Grpc_BaseUrl, 
+    EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint,
+    EnvironmentVariableNames.DevOrProd
+]);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -44,7 +49,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.MapHealthChecks("/liveness", new HealthCheckOptions
+app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
 {
     Predicate = _ => false, // Always return healthy for liveness
     ResultStatusCodes =

@@ -4,6 +4,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Portfolio.Infrastructure.Constants;
 using Portfolio.Infrastructure.Helpers;
 using Serilog;
 
@@ -18,12 +19,12 @@ public static class OpenTelemetryExtensions
                 .AddContainerDetector()
                 .AddHostDetector()
                 .AddOperatingSystemDetector()
-                .AddService(AssemblyHelper.GetStartupProjectsName() + " " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
+                .AddService(AssemblyHelper.GetStartupProjectsName() + " " + Environment.GetEnvironmentVariable(EnvironmentVariableNames.DevOrProd));
 
-        var otelEndpoint = Environment.GetEnvironmentVariable("OTEL_COLLECTOR_ENDPOINT");
+        var otelEndpoint = Environment.GetEnvironmentVariable(EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint);
         if (string.IsNullOrEmpty(otelEndpoint))
         {
-            Log.Error("Otel endpoint not set at environment variable! Please set environment variable OTEL_COLLECTOR_ENDPOINT");
+            Log.Error("Otel endpoint not set at environment variable! Please set environment variable {OtelEndpoint}", EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint);
             return;
         }
         

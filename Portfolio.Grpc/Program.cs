@@ -9,7 +9,6 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 if (builder.Environment.IsDevelopment())
     Env.Load("../.env");
 
@@ -18,7 +17,9 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
     EnvironmentVariableNames.SqlDb_Port, 
     EnvironmentVariableNames.SqlDb_User, 
     EnvironmentVariableNames.SqlDb_Password, 
-    EnvironmentVariableNames.SqlDb_Name
+    EnvironmentVariableNames.SqlDb_Name,
+    EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint,
+    EnvironmentVariableNames.DevOrProd
 ]);
 
 builder.InitLogsWithSerilog();
@@ -36,7 +37,7 @@ builder.Services.ConfigureRepositories();
 var app = builder.Build();
 
 // todo: Maybe do a grpc endpoint check? Or maybe read this healthcheck stuff again. Seems like I'm missing something. 
-app.MapHealthChecks("/liveness", new HealthCheckOptions
+app.MapHealthChecks(DefaultValues.HealthCheck_Liveness, new HealthCheckOptions
 {
     Predicate = _ => false, // Always return healthy for liveness
     ResultStatusCodes =
@@ -47,7 +48,7 @@ app.MapHealthChecks("/liveness", new HealthCheckOptions
     }
 });
 
-app.MapHealthChecks("/readiness", new HealthCheckOptions
+app.MapHealthChecks(DefaultValues.HealthCheck_Readiness, new HealthCheckOptions
 {
     Predicate = check => check.Name == readinessDbCheckName,
     ResultStatusCodes =

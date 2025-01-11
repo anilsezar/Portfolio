@@ -11,4 +11,7 @@ public static class EnvironmentVariableNames
     public const string SqlDb_Password = "SQL_DB_PASSWORD";
     public const string SqlDb_Name = "SQL_DB_NAME";
     
+    public const string OpenTelemetry_CollectorEndpoint = "OTEL_COLLECTOR_ENDPOINT";
+    
+    public const string DevOrProd = "ASPNETCORE_ENVIRONMENT";
 }
