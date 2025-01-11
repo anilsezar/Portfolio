@@ -51,7 +51,11 @@ public static class ClientInfoRequestFactory
 
     private static string GetIpAddress(IHttpContextAccessor httpContextAccessor)
     {
-        return httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? "";
+        var headers = httpContextAccessor.HttpContext?.Request.Headers;
+        if (headers is null)
+            return "";
+        
+        return headers.TryGetValue("X-Real-IP", out var value) ? value.ToString() : "";
     }
 
     private static string GetAllRequestHeadersAsJson(IHttpContextAccessor httpContextAccessor)
