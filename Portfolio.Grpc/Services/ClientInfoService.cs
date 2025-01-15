@@ -14,7 +14,7 @@ public class ClientInfoService(IRequestLogRepository repository) : ClientInfo.Cl
     {
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
 
-        repository.PersistAsync(
+        repository.Create(
             new RequestLog
             {
                 AcceptLanguage = r.Language,

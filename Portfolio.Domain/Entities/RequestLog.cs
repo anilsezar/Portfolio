@@ -26,8 +26,17 @@ public class RequestLog : EntityBaseWithInt
     
     // By HttpContext & Ip check cronjob
     public required string ClientIp { get; init; }
-    public required string Country { get; init; }
-    public required string City { get; init; }
+    public required string Country { get; set; }
+    public required string City { get; set; }
     
     public required string Extras { get; init; }
+    
+    public void UpdateLocation(string city, string country)
+    {
+        if (string.IsNullOrWhiteSpace(city) && string.IsNullOrWhiteSpace(country))
+            throw new InvalidOperationException($"Both {nameof(City)} and {nameof(Country)} cannot be empty when updating location.");
+
+        City = city;
+        Country = country;
+    }
 }

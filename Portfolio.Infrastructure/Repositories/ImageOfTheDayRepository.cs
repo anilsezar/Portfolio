@@ -15,14 +15,6 @@ public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : IImageOfThe
         await dbContext.SaveChangesAsync();
     }
     
-    public async Task<ImageOfTheDay> GetLatestAsync()
-    {
-        return await dbContext.ImageOfTheDay
-            .Where(x => x.UrlWorks && x.DoIPreferToDisplayThis)
-            .OrderByDescending(x => x.CreationTime)
-            .FirstAsync();
-    }
-    
     public async Task<ImageOfTheDay> GetLatestBackgroundImageDetailsAsync()
     {
         var img = await dbContext.ImageOfTheDay

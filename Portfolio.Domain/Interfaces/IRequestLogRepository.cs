@@ -1,8 +1,10 @@
 ﻿using Portfolio.Domain.Entities;
+using Portfolio.Domain.Interfaces.Dtos;
 
 namespace Portfolio.Domain.Interfaces;
 
-public interface IRequestLogRepository
+public interface IRequestLogRepository: IRepository<RequestLog>
 {
-    Task PersistAsync(RequestLog rl);
+    List<UncheckedIpDto> GetRowsOfUncheckedIps();
+    void UpdateRowWithCityAndCountryInfo(int rowId, string city, string country);
 }
