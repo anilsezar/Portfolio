@@ -30,7 +30,6 @@
       dockerfile: Portfolio.Grpc/Dockerfile
     ports:
       - "8081:8081"
-#    command: ["sh", "-c", "dotnet ef database update --project Portfolio.Infrastructure --startup-project Portfolio.Grpc && dotnet Portfolio.Grpc.dll"]
     depends_on:
       db_postgres:
         condition: service_healthy
@@ -50,6 +49,8 @@
 
   adminer:
     image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: db_postgres
     ports:
       - "8090:8080"
     depends_on:
