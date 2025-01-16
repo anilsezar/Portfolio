@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/joho/godotenv"
-	"strings"
+	"ip-lookup-cron/grpc"
+	"ip-lookup-cron/proto"
+	"ip-lookup-cron/third_party"
 	"time"
 )
 
@@ -12,40 +14,38 @@ func main() {
 		fmt.Println("Env file not present")
 	}
 
-	var db = DbContext()
+	ips := grpc.GetIpsToCheckFromGrpc()
+	fmt.Println("Got: " + fmt.Sprintf("%d", len(ips)) + " from grpc")
 
-	var requests []Request
-	result := db.Where("country = ?", "").Find(&requests)
-	if result.Error != nil {
-		panic("failed to query requests")
-	}
-
-	deletedRowCount := 0
-	for _, req := range requests {
-		if req.ClientIP == "127.0.0.1" ||
-			req.ClientIP == "31.223.32.192" ||
-			strings.Contains(strings.ToLower(req.UserAgent), "uptimerobot") {
-			fmt.Println("Will delete this row: " + fmt.Sprintf("%v", req))
-			db.Delete(&req)
-			deletedRowCount++
+	rowsToDeleteCount := 0
+	for _, ip := range ips {
+		if ip.IpAddress == "127.0.0.1" ||
+			ip.IpAddress == "31.223.32.192" {
+			fmt.Println("Will delete this row: " + fmt.Sprintf("%v", ip))
+			rowsToDeleteCount++
+			ip.Operation = proto.DbOperationForThisRow_DELETE
 			continue
 		}
 
-		ipInfo, err := GetIPInfo(req.ClientIP)
+		ipInfo, err := third_party.GetIPInfo(ip.IpAddress)
 		if err != nil {
 			time.Sleep(time.Second * 10)
 			fmt.Println(err)
 			continue
 		}
 
-		req.Country = GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
-		req.City = ipInfo.City
+		ip.Country = GetFlag(ipInfo.CountryCode) + " - " + ipInfo.Country
+		ip.City = ipInfo.City
+		ip.Operation = proto.DbOperationForThisRow_UPDATE
 
-		db.Save(&req)
 		time.Sleep(time.Second * 2) // Rate limit the request
 	}
 
+	if len(ips) > 0 {
+		grpc.SendIpCheckResultsToGrpc(ips)
+	}
+
 	fmt.Println("ip-lookup-cron is done.")
-	fmt.Println("Affected: " + fmt.Sprintf("%d", result.RowsAffected) + " rows")
-	fmt.Println("Deleted: " + fmt.Sprintf("%d", deletedRowCount) + " rows")
+	fmt.Println("Will affect: " + fmt.Sprintf("%d", len(ips)) + " rows")
+	fmt.Println("Will delete: " + fmt.Sprintf("%d", rowsToDeleteCount) + " rows")
 }
