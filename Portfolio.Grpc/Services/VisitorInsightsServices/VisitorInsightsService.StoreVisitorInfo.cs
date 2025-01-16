@@ -1,20 +1,19 @@
 ﻿using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
-using Portfolio.Infrastructure.Constants;
 using Portfolio.Domain.Entities;
-using Portfolio.Domain.Interfaces;
+using Portfolio.Infrastructure.Constants;
 using Serilog;
 
-namespace Portfolio.Grpc.Services;
+namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
-public class ClientInfoService(IRequestLogRepository repository) : ClientInfo.ClientInfoBase
+public partial class VisitorInsightsService
 {
     // todo: I wanna use MediatR here
-    public override Task<Empty> StoreInfo(ClientInfoRequest r, ServerCallContext context)
+    public override Task<Empty> StoreVisitorInfo(StoreVisitorInfoRequest r, ServerCallContext context)
     {
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
 
-        repository.Create(
+        requestLogRepository.Create(
             new RequestLog
             {
                 AcceptLanguage = r.Language,

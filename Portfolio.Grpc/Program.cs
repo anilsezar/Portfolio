@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Grpc.Services;
+using Portfolio.Grpc.Services.VisitorInsightsServices;
 using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.Extensions;
 using Serilog;
@@ -61,9 +62,8 @@ app.MapHealthChecks(DefaultValues.HealthCheck_Readiness, new HealthCheckOptions
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GetBackgroundImageService>();
-// app.MapGrpcService<BingPersistImageService>();
-// app.MapGrpcService<BackgroundImagesService>();
-app.MapGrpcService<ClientInfoService>();
+app.MapGrpcService<VisitorInsightsService>();
+
 
 app.MapGet("/",
     () =>

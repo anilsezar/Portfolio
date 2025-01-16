@@ -1,0 +1,56 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Portfolio.Grpc";
+option go_package = "proto/";
+// protoc --proto_path=../../../protos --go_out=. --go-grpc_out=. ../../../protos/visitor_insights.proto
+
+
+package client_info;
+
+import "google/protobuf/empty.proto";
+
+service VisitorInsights {
+  rpc GetIpsToCheck (google.protobuf.Empty) returns (GetIpsToCheckResponse);
+  rpc PersistCheckedIps (PersistCheckedIpsRequest) returns (google.protobuf.Empty);
+  rpc StoreVisitorInfo (StoreVisitorInfoRequest) returns (google.protobuf.Empty);
+}
+
+message GetIpsToCheckResponse {
+  repeated IpCheckDto ips = 1;
+}
+
+message PersistCheckedIpsRequest {
+  repeated IpCheckDto checkedIps = 1;
+}
+
+enum DbOperationForThisRow {
+  UNPROCESSED = 0;
+  UPDATE = 1;
+  DELETE = 2;
+}
+
+message IpCheckDto {
+  int32 entityId = 1;
+  string ipAddress = 2;
+  string city = 3;
+  string country = 4;
+  DbOperationForThisRow operation = 5;
+}
+
+message StoreVisitorInfoRequest {
+  string userAgent = 1;
+  string language = 2;
+  string platform = 3;
+  bool webdriver = 4;
+  string deviceMemory = 5;
+  string hardwareConcurrency = 6;
+  int32 maxTouchPoints = 7;
+  string doNotTrack = 8;
+  string connection = 9;
+  bool cookieEnabled = 10;
+  bool onLine = 11;
+  string referrer = 12;
+  string resolution = 13;
+  string ipAddress = 14;
+  string extras = 15;
+}

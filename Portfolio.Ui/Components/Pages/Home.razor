@@ -4,7 +4,7 @@
 @using Portfolio.Ui.Factories
 @using Serilog
 @inject IHttpContextAccessor HttpContextAccessor
-@inject ClientInfo.ClientInfoClient ClientInfoClient;
+@inject VisitorInsights.VisitorInsightsClient VisitorInsightsClient;
 @inject IJSRuntime JsRuntime
 
 
@@ -49,8 +49,8 @@
 
         try
         {
-            ClientInfoClient.StoreInfo(request);
-            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(ClientInfoClient.StoreInfo));
+            VisitorInsightsClient.StoreVisitorInfo(request);
+            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(VisitorInsightsClient.StoreVisitorInfo));
         }
         catch (Exception e)
         {

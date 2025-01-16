@@ -7,9 +7,9 @@ namespace Portfolio.Ui.Factories;
 
 public static class ClientInfoRequestFactory
 {
-    public static ClientInfoRequest Create(Dictionary<string, string> viaJavascript, IHttpContextAccessor httpContextAccessor)
+    public static StoreVisitorInfoRequest Create(Dictionary<string, string> viaJavascript, IHttpContextAccessor httpContextAccessor)
     {
-        return new ClientInfoRequest
+        return new StoreVisitorInfoRequest
         {
             Language            = GetValueOrDefault(viaJavascript, "language"),
             Platform            = GetValueOrDefault(viaJavascript, "platform"),
