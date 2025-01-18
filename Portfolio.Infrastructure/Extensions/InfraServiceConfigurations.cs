@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Portfolio.Domain.Interfaces;
+using Portfolio.Domain.Interfaces.Repositories;
 using Portfolio.Infrastructure.Repositories;
 
 namespace Portfolio.Infrastructure.Extensions;

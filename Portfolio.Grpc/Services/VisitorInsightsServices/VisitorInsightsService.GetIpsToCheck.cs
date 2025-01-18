@@ -6,11 +6,11 @@ namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
 public partial class VisitorInsightsService
 {
-    public override Task<GetIpsToCheckResponse> GetIpsToCheck(Empty r, ServerCallContext context)
+    public override async Task<GetIpsToCheckResponse> GetIpsToCheck(Empty r, ServerCallContext context)
     {
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
 
-        var ips = requestLogRepository.GetRowsOfUncheckedIps();
+        var ips = await requestLogRepository.GetRowsOfUncheckedIpsAsync();
 
         var response = new GetIpsToCheckResponse();
         foreach (var ip in ips)
@@ -26,6 +26,6 @@ public partial class VisitorInsightsService
         }
         
         Log.Information("✅ Sent {IpCount} ips for checking", response.Ips.Count);
-        return Task.FromResult(response);
+        return response;
     }
 }

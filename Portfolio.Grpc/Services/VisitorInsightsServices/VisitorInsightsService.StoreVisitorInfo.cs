@@ -1,19 +1,15 @@
 ﻿using System.Text.Json;
-using Google.Protobuf.WellKnownTypes;
-using Portfolio.Domain.Entities;
-using Portfolio.Infrastructure.Constants;
-using Serilog;
 
 namespace Portfolio.Grpc.Services.VisitorInsightsServices;
 
 public partial class VisitorInsightsService
 {
     // todo: I wanna use MediatR here
-    public override Task<Empty> StoreVisitorInfo(StoreVisitorInfoRequest r, ServerCallContext context)
+    public override async Task<Empty> StoreVisitorInfo(StoreVisitorInfoRequest r, ServerCallContext context)
     {
         Log.Information("Request to log: {Log}",JsonSerializer.Serialize(r));
 
-        requestLogRepository.Create(
+        await requestLogRepository.CreateAsync(
             new RequestLog
             {
                 AcceptLanguage = r.Language,
@@ -37,6 +33,6 @@ public partial class VisitorInsightsService
             }
         );
         
-        return Task.FromResult(new Empty());
+        return new Empty();
     }
 }

@@ -1,15 +1,16 @@
-﻿using Portfolio.Domain.Entities;
-using Portfolio.Domain.Interfaces;
-using Portfolio.Domain.Interfaces.Dtos;
-using Serilog;
+﻿using Serilog;
+using Portfolio.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Portfolio.Domain.Interfaces.Repositories;
+using Portfolio.Domain.Interfaces.Repositories.Dtos;
 
 namespace Portfolio.Infrastructure.Repositories;
 
 public class RequestLogRepository(PortfolioDbContext dbContext): BaseRepository<RequestLog>(dbContext), IRequestLogRepository
 {
-    public List<UncheckedIpDto> GetRowsOfUncheckedIps()
+    public async Task<List<UncheckedIpDto>> GetRowsOfUncheckedIpsAsync()
     {
-        return dbContext.RequestLog
+        return await dbContext.RequestLog
             .Where(x => x.ClientIp != "" &&
                         x.City == "" &&
                         x.Country == "")
@@ -18,12 +19,12 @@ public class RequestLogRepository(PortfolioDbContext dbContext): BaseRepository<
                 Id = x.Id,
                 ClientIp = x.ClientIp
             })
-            .ToList();
+            .ToListAsync();
     }
 
-    public void UpdateRowWithCityAndCountryInfo(int rowId, string city, string country)
+    public async Task UpdateRowWithCityAndCountryInfoAsync(int rowId, string city, string country)
     {
-        var rowToUpdate = GetById(rowId);
+        var rowToUpdate = await GetByIdAsync(rowId);
         
         if (rowToUpdate == null)
         {
@@ -33,6 +34,6 @@ public class RequestLogRepository(PortfolioDbContext dbContext): BaseRepository<
         
         rowToUpdate.UpdateLocation(city, country);
 
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }

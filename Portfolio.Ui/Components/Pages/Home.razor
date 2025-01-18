@@ -24,15 +24,13 @@
 
 
 @code {
-    protected override void OnAfterRender(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
-        {
-            _ = GetClientInfo();
-        }
+            await GetClientInfoAsync();
     }
     
-    private async Task GetClientInfo()
+    private async Task GetClientInfoAsync()
     {
         Dictionary<string, string>? viaJavascript;
         try
@@ -49,8 +47,8 @@
 
         try
         {
-            VisitorInsightsClient.StoreVisitorInfo(request);
-            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(VisitorInsightsClient.StoreVisitorInfo));
+            VisitorInsightsClient.StoreVisitorInfoAsync(request);
+            Log.Information("\ud83d\udce8 Sent a gRPC request to {ServiceName}", nameof(VisitorInsightsClient.StoreVisitorInfoAsync));
         }
         catch (Exception e)
         {

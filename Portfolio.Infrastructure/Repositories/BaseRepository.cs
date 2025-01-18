@@ -7,37 +7,37 @@ public abstract class BaseRepository<T>(PortfolioDbContext dbContext)
 {
     protected readonly PortfolioDbContext dbContext = dbContext;
 
-    public virtual T? GetById(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
     {
-        return dbContext.Set<T>().Find(id);
+        return await dbContext.Set<T>().FindAsync(id);
     }
     
-    public virtual T Create(T entity)
+    public virtual async Task<T> CreateAsync(T entity)
     {
-        dbContext.Set<T>().Add(entity);
-        dbContext.SaveChanges();
+        await dbContext.Set<T>().AddAsync(entity);
+        await dbContext.SaveChangesAsync();
         return entity;
     }
     
-    public virtual T Update(T entity)
+    public virtual async Task<T> UpdateAsync(T entity)
     {
         dbContext.Set<T>().Update(entity);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
         return entity;
     }
     
-    public virtual void Delete(T entity)
+    public virtual async Task DeleteAsync(T entity)
     {
         dbContext.Set<T>().Remove(entity);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
     
-    public virtual void RemoveRows(List<int> ids)
+    public virtual async Task RemoveRowsAsync(List<int> ids)
     {
         var rowsToRemove = dbContext.Set<T>()
             .Where(x => ids.Contains(x.Id));
 
         dbContext.Set<T>().RemoveRange(rowsToRemove);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }

@@ -2,7 +2,7 @@
 using Portfolio.Infrastructure.Constants;
 using Portfolio.Domain.Entities;
 using Portfolio.Domain.Enums;
-using Portfolio.Domain.Interfaces;
+using Portfolio.Domain.Interfaces.Repositories;
 using Serilog;
 
 namespace Portfolio.Infrastructure.Repositories;
