@@ -1,4 +1,7 @@
 ﻿@page "/Contact"
+@using System.ComponentModel.DataAnnotations
+@using Portfolio.Grpc
+@inject SendEmailToAdmin.SendEmailToAdminClient SendEmailToAdminClient;
 
 <section id="contact" class="contact">
     <div class="container">
@@ -9,7 +12,6 @@
         </div>
 
         <div class="row" data-aos="fade-in">
-
             <div class="col-lg-5 d-flex align-items-stretch">
                 <div class="info">
                     <div class="address">
@@ -31,39 +33,123 @@
                     </div>
                     <iframe alt="Map of Istanbul, covers all of this mega city. It's radius might be more than 200 km" src="https://www.google.com/maps/embed/v1/view?key=AIzaSyCZvkrT_CC5SEH3xOhsZm7QB1aPsX5QCRI&center=41.012922,28.991611&zoom=8&language=en" frameborder="0" loading="lazy" style="border:0; width: 100%; height: 290px;" allowfullscreen></iframe>
                 </div>
-
             </div>
 
             <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-                <form method="post" action="" role="form" class="php-email-form">
+                <EditForm Model="@formData" OnValidSubmit="@HandleValidSubmit" class="email-form">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="name">Your Name</label>
-                            <input type="text" name="name" class="form-control" id="name" required>
+                            <InputText id="name" class="form-control" @bind-Value="formData.Name" placeholder="Anil" minlength="3"/>
+                            <ValidationMessage For="@(() => formData.Name)" />
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="name">Your Email</label>
-                            <input type="email" class="form-control" name="email" id="email" required>
+                            <label for="email">Your Email</label>
+                            <InputText id="email" type="email" class="form-control" @bind-Value="formData.Email" placeholder="email@address.com"/>
+                            <ValidationMessage For="@(() => formData.Email)" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="name">Subject</label>
-                        <input type="text" class="form-control" name="subject" id="subject" required>
+                        <label for="subject">Subject</label>
+                        <InputText id="subject" class="form-control" @bind-Value="formData.Subject" placeholder="subject" minlength="2"/>
+                        <ValidationMessage For="@(() => formData.Subject)" />
                     </div>
                     <div class="form-group">
-                        <label for="name">Message</label>
-                        <textarea class="form-control" name="message" rows="11" required></textarea>
+                        <label for="message">Message</label>
+                        <InputTextArea id="message" class="form-control" @bind-Value="formData.Message" placeholder="your message here" minlength="5"/>
+                        <ValidationMessage For="@(() => formData.Message)" />
                     </div>
-                    <div class="my-3">
-                        <div class="loading">Loading</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" disabled="@isSubmitting">
+                            @if (isSubmitting)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span>Sending...</span>
+                            }
+                            else
+                            {
+                                <span>Send Message</span>
+                            }
+                        </button>
                     </div>
-                    <div class="text-center"><button type="submit">Send Message</button></div>
-                </form>
+                </EditForm>
+
+                @if (isSuccess.HasValue)
+                {
+                    <div class="floating-alert @(isSuccess.Value ? "alert-success" : "alert-danger")" id="floating-alert">
+                        @resultMessage
+                    </div>
+                    <script>
+                        setTimeout(() => {
+                            const alert = document.getElementById('floating-alert');
+                            if (alert) {
+                                alert.style.opacity = '0'; // Fade out
+                                setTimeout(() => alert.remove(), 500); // Remove from DOM after fade
+                            }
+                        }, 3000); // 3-second delay before fading out
+                    </script>
+                }
             </div>
-
         </div>
-
     </div>
 </section>
+
+@code {
+    private const int NameMinLength = 3;
+    private const int SubjectMinLength = 2;
+    private const int MessageMinLength = 15;
+
+    private FormModel formData = new FormModel();
+    private bool isSubmitting = false;
+    private bool? isSuccess = null;
+    private string resultMessage = "";
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        isSuccess = null;
+        resultMessage = "";
+
+        try
+        {
+            // Simulate an async operation
+            await Task.Delay(2000);
+
+            // Simulate success
+            isSuccess = true;
+            resultMessage = "Your message has been sent successfully!";
+        }
+        catch
+        {
+            isSuccess = false;
+            resultMessage = "There was an error sending your message. Please try again later.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private class FormModel
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        [MinLength(NameMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Subject is required.")]
+        [MinLength(SubjectMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
+        public string Subject { get; set; }
+
+        [Required(ErrorMessage = "Message is required.")]
+        [MinLength(MessageMinLength, ErrorMessage = "{0} must be at least {1} characters.")]
+        public string Message { get; set; }
+    }
+}
+

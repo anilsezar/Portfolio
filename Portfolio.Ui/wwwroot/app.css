@@ -926,90 +926,90 @@ section {
     color: #fff;
 }
 
-.contact .php-email-form {
+/*--------------------------------------------------------------
+# Email Form
+--------------------------------------------------------------*/
+@layer general-styling {
+    :root {
+        --clr-success: hsl(143, 100%, 26%);
+        --clr-warning: hsl(43, 100%, 66%);
+        --clr-error: hsl(348, 55%, 49%);
+    }
+}
+
+.contact .email-form input,
+.contact .email-form textarea {
+    outline: 2px solid hsl(203, 30%, 26%);
+    font-size: 14px;
+    box-shadow: none;
+}
+
+input.form-control:not(:placeholder-shown):valid,
+textarea.form-control:not(:placeholder-shown):valid {
+    outline-color: var(--clr-success);
+}
+
+input.form-control:not(:placeholder-shown):invalid,
+textarea.form-control:not(:placeholder-shown):invalid {
+    outline-color: var(--clr-error);
+}
+
+input.form-control:focus:not(:placeholder-shown):invalid,
+textarea.form-control:focus:not(:placeholder-shown):invalid {
+    outline-color: var(--clr-warning);
+}
+
+
+.contact .email-form {
     width: 100%;
     padding: 30px;
     background: #fff;
     box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.12);
 }
 
-.contact .php-email-form .form-group {
+.contact .email-form .form-group {
     padding-bottom: 8px;
 }
 
-.contact .php-email-form .validate {
-    display: none;
-    color: red;
-    margin: 0 0 15px 0;
-    font-weight: 400;
-    font-size: 13px;
+.floating-alert {
+    position: fixed; /* Makes the alert stay in a fixed position on the screen */
+    top: 50px; /* Distance from the top of the screen */
+    right: 50px; /* Distance from the right of the screen */
+    z-index: 1050; /* Ensures it appears above other content */
+    padding: 15px 20px; /* Adds some padding for better appearance */
+    border-radius: 5px; /* Rounds the corners of the alert */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+    color: white; /* Text color */
+    font-size: 16px; /* Adjust text size */
+    transition: opacity 1.5s ease-in-out; /* Enables fade-out animation and sets the fade out animation duration */
+    opacity: 1; /* Start fully visible */
 }
 
-.contact .php-email-form .error-message {
-    display: none;
-    color: #fff;
-    background: #ed3c0d;
-    text-align: left;
-    padding: 15px;
-    font-weight: 600;
+.alert-success {
+    background-color: #28a745; /* Green for success */
 }
 
-.contact .php-email-form .error-message br+br {
-    margin-top: 25px;
+.alert-danger {
+    background-color: #dc3545; /* Red for error */
 }
 
-.contact .php-email-form .sent-message {
-    display: none;
-    color: #fff;
-    background: #18d26e;
-    text-align: center;
-    padding: 15px;
-    font-weight: 600;
-}
-
-.contact .php-email-form .loading {
-    display: none;
-    background: #fff;
-    text-align: center;
-    padding: 15px;
-}
-
-.contact .php-email-form .loading:before {
-    content: "";
-    display: inline-block;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    margin: 0 10px -6px 0;
-    border: 3px solid #18d26e;
-    border-top-color: #eee;
-    animation: animate-loading 1s linear infinite;
-}
-
-.contact .php-email-form .form-group {
+.contact .email-form .form-group {
     margin-bottom: 15px;
 }
 
-.contact .php-email-form label {
+.contact .email-form label {
     padding-bottom: 8px;
 }
 
-.contact .php-email-form input,
-.contact .php-email-form textarea {
-    border-radius: 0;
-    box-shadow: none;
-    font-size: 14px;
-}
-
-.contact .php-email-form input {
+.contact .email-form input {
     height: 44px;
 }
 
-.contact .php-email-form textarea {
+.contact .email-form textarea {
     padding: 10px 15px;
 }
 
-.contact .php-email-form button[type=submit] {
+.contact .email-form button[type=submit] {
     background: #149ddd;
     border: 0;
     padding: 10px 24px;
@@ -1018,7 +1018,7 @@ section {
     border-radius: 4px;
 }
 
-.contact .php-email-form button[type=submit]:hover {
+.contact .email-form button[type=submit]:hover {
     background: #37b3ed;
 }
 
