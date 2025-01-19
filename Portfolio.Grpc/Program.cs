@@ -20,7 +20,8 @@ EnvironmentExtensions.VerifyEnvironmentValuesAreSet([
     EnvironmentVariableNames.SqlDb_Password, 
     EnvironmentVariableNames.SqlDb_Name,
     EnvironmentVariableNames.OpenTelemetry_CollectorEndpoint,
-    EnvironmentVariableNames.DevOrProd
+    EnvironmentVariableNames.DevOrProd,
+    EnvironmentVariableNames.Email_Slack_WebhookUrl
 ]);
 
 builder.InitLogsWithSerilog();

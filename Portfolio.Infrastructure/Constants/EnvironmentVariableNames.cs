@@ -14,4 +14,6 @@ public static class EnvironmentVariableNames
     public const string OpenTelemetry_CollectorEndpoint = "OTEL_COLLECTOR_ENDPOINT";
     
     public const string DevOrProd = "ASPNETCORE_ENVIRONMENT";
+    
+    public const string Email_Slack_WebhookUrl = "PORTFOLIO_EMAIL_SLACK_WEBHOOK_URL";
 }
