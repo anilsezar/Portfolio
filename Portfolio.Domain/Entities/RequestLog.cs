@@ -7,7 +7,7 @@ namespace Portfolio.Domain.Entities;
 // https://docs.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations
 // [Table("Request")]
 [Comment("Accesses to the website")]
-public class RequestLog : EntityBaseWithInt
+public class RequestLog : EntityBase
 {
     // By Javascript
     public required string UserAgent { get; init; }

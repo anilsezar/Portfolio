@@ -3,7 +3,7 @@
 namespace Portfolio.Infrastructure.Repositories;
 
 public abstract class BaseRepository<T>(PortfolioDbContext dbContext)
-    where T : EntityBaseWithInt
+    where T : EntityBase
 {
     protected readonly PortfolioDbContext dbContext = dbContext;
 

@@ -5,7 +5,7 @@ using Portfolio.Domain.Enums;
 namespace Portfolio.Domain.Entities;
 
 [Comment("List of daily background images by Bing, NASA, etc. They are great")]
-public class ImageOfTheDay : EntityBaseWithInt
+public class ImageOfTheDay : EntityBase
 {
     // public ImageOfTheDay(string imageUrl, string altText, ImageOfTheDaySource source, bool urlWorks, bool doIPreferToDisplayThis)
     // {

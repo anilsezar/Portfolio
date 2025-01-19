@@ -1,13 +1,18 @@
-﻿namespace Portfolio.Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Portfolio.Domain.Entities;
 
 public abstract class EntityBase
 {
-    public Guid Id { get; set; }
-    public DateTime CreationTime { get; set; }
-
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key]
+    public int Id { get; init; }
+    
+    public DateTime CreatedAt { get; init; }
+    
     protected EntityBase()
     {
-        Id = Guid.NewGuid(); // todo: Use int
-        CreationTime = DateTime.UtcNow;
+        CreatedAt = DateTime.UtcNow;
     }
 }
