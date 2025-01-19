@@ -981,7 +981,7 @@ textarea.form-control:focus:not(:placeholder-shown):invalid {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
     color: white; /* Text color */
     font-size: 16px; /* Adjust text size */
-    transition: opacity 1.5s ease-in-out; /* Enables fade-out animation and sets the fade out animation duration */
+    transition: opacity 4s ease-in-out; /* Enables fade-out animation and sets the fade out animation duration */
     opacity: 1; /* Start fully visible */
 }
 
