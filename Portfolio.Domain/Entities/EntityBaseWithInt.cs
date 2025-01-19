@@ -9,10 +9,10 @@ public abstract class EntityBaseWithInt
     [Key]
     public int Id { get; init; }
     
-    public DateTime CreationTime { get; }
+    public DateTime CreatedAt { get; init; }
     
     protected EntityBaseWithInt()
     {
-        CreationTime = DateTime.UtcNow;
+        CreatedAt = DateTime.UtcNow;
     }
 }

@@ -14,6 +14,6 @@ public class EmailToAdminRepository(PortfolioDbContext dbContext) : BaseReposito
                            x.EmailAddress == dto.EmailAddress &&
                            x.Subject == dto.Subject &&
                            x.Message == dto.Message &&
-                           x.CreationTime > DateTime.Now.AddHours(-1));
+                           x.CreatedAt > DateTime.Now.AddHours(-1));
     }
 }
