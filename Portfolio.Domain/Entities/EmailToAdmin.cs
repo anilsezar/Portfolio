@@ -12,4 +12,5 @@ public class EmailToAdmin: EntityBaseWithInt
     public required string EmailAddress { get; init; }
     public required string Subject { get; init; }
     public required string Message { get; init; }
+    public required bool IsItSentSuccessfully { get; set; }
 }
