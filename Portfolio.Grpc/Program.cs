@@ -1,12 +1,16 @@
 ﻿using DotNetEnv;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Portfolio.Infrastructure.Constants;
+using Portfolio.Domain.Interfaces.Repositories;
+using Portfolio.Domain.Interfaces.ThirdPartyServices;
 using Portfolio.Grpc.Services;
+using Portfolio.Grpc.Services.SendEmailToAdmin;
+using Portfolio.Grpc.Services.SendEmailToAdmin.Providers;
 using Portfolio.Grpc.Services.VisitorInsightsServices;
 using Portfolio.Infrastructure;
 using Portfolio.Infrastructure.Extensions;
-using Serilog;
+using Portfolio.Infrastructure.Repositories;
+using Portfolio.Infrastructure.ThirdPartyServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +38,15 @@ builder.Services
     .AddDbContextCheck<PortfolioDbContext>(failureStatus: HealthStatus.Degraded, name: readinessDbCheckName);
 
 builder.Services.AddGrpc();
-builder.Services.ConfigureRepositories();
+
+// Repositories
+builder.Services.AddScoped<IImageOfTheDayRepository, ImageOfTheDayRepository>();
+builder.Services.AddScoped<IRequestLogRepository, RequestLogRepository>();
+builder.Services.AddScoped<IEmailToAdminRepository, EmailToAdminRepository>();
+
+// Factories
+builder.Services.AddScoped<IEmailProvider, SlackEmailProvider>();
+builder.Services.AddScoped<IEmailProviderFactory, EmailProviderFactory>();
 
 var app = builder.Build();
 
@@ -64,6 +76,7 @@ app.MapHealthChecks(DefaultValues.HealthCheck_Readiness, new HealthCheckOptions
 // Configure the HTTP request pipeline.
 app.MapGrpcService<GetBackgroundImageService>();
 app.MapGrpcService<VisitorInsightsService>();
+app.MapGrpcService<SendEmailToAdminService>();
 
 
 app.MapGet("/",
