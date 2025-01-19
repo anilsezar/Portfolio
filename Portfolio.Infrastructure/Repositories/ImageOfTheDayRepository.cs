@@ -7,14 +7,8 @@ using Serilog;
 
 namespace Portfolio.Infrastructure.Repositories;
 
-public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : IImageOfTheDayRepository
+public class ImageOfTheDayRepository(PortfolioDbContext dbContext) : BaseRepository<ImageOfTheDay>(dbContext), IImageOfTheDayRepository
 {
-    public async Task AddAsync(ImageOfTheDay image)
-    {
-        await dbContext.ImageOfTheDay.AddAsync(image);
-        await dbContext.SaveChangesAsync();
-    }
-    
     public async Task<ImageOfTheDay> GetLatestBackgroundImageDetailsAsync()
     {
         var img = await dbContext.ImageOfTheDay

@@ -2,7 +2,7 @@
 
 namespace Portfolio.Domain.Interfaces.Repositories;
 
-public interface IImageOfTheDayRepository
+public interface IImageOfTheDayRepository : IRepository<ImageOfTheDay>
 {
     Task<ImageOfTheDay> GetLatestBackgroundImageDetailsAsync();
 }
