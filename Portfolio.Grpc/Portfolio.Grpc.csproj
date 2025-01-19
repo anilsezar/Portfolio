@@ -16,15 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-      <Content Include="..\protos\background_images.proto">
-        <Link>protos\background_images.proto</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <Protobuf Include="..\protos\background_images.proto" GrpcServices="Both"/>
         <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Both" />
         <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Both" />

@@ -27,10 +27,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\css\style.css" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Portfolio.Grpc\Portfolio.Grpc.csproj" />
     </ItemGroup>
 
