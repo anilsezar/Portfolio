@@ -1,9 +1,8 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Portfolio.Infrastructure.Repositories;
+﻿using Portfolio.Domain.Interfaces.Repositories;
 
 namespace Portfolio.Grpc.Services;
 
-public class GetBackgroundImageService(ImageOfTheDayRepository repository) : BackgroundImages.BackgroundImagesBase
+public class GetBackgroundImageService(IImageOfTheDayRepository repository) : BackgroundImages.BackgroundImagesBase
 {
     public override async Task<BackgroundImageDetails> Get(Empty empty, ServerCallContext context)
     {
