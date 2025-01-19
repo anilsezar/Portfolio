@@ -13,4 +13,6 @@ public static class DefaultValues
     public const string HealthCheck_Liveness = "/liveness";
     public const string HealthCheck_Readiness = "/readiness";
     public const string HealthCheck_ThirdParty = "/thirdPartyHealthCheck";
+    
+    public const string SendEmail_ErrorMessage = "It seems there is an error at my side. I sent a notification to myself and will fix this soon as I can, thanks!";
 }
