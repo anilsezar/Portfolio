@@ -18,6 +18,7 @@ public static class EnvironmentExtensions
         return false;
     }
     
+    // todo: This is not working properly. Fix it
     public static void VerifyEnvironmentValuesAreSet(string[] variableNames)
     {
         var missingValues = variableNames
