@@ -1,0 +1,29 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Portfolio.Grpc";
+
+package client_info;
+
+import "google/protobuf/empty.proto";
+
+service SendEmailToAdmin {
+  rpc Send (SendRequest) returns (SendResponse);
+}
+
+message SendRequest {
+  string senderName = 1;
+  string senderEmail = 2;
+  string subject = 3;
+  string message = 4;
+}
+
+message SendResponse {
+  ResultCode resultCode = 1;
+  string resultMessage = 2;
+}
+
+enum ResultCode {
+  SUCCESS = 0;
+  ERROR = 1;
+  FORBIDDEN = 2;
+}

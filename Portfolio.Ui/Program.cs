@@ -37,6 +37,10 @@ builder.Services.AddGrpcClient<BackgroundImages.BackgroundImagesClient>(o =>
 {
     o.Address = new Uri(grpcAddress);
 });
+builder.Services.AddGrpcClient<SendEmailToAdmin.SendEmailToAdminClient>(o =>
+{
+    o.Address = new Uri(grpcAddress);
+});
 
 var app = builder.Build();
 

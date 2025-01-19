@@ -27,6 +27,7 @@
     <ItemGroup>
         <Protobuf Include="..\protos\background_images.proto" GrpcServices="Both"/>
         <Protobuf Include="..\protos\visitor_insights.proto" GrpcServices="Both" />
+        <Protobuf Include="..\protos\send_email_to_admin.proto" GrpcServices="Both" />
     </ItemGroup>
 
     <ItemGroup>
